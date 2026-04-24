@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a0a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Japa Timer">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Japa Timer</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overscroll-behavior: none; }
+body { font-family: 'DM Sans', sans-serif; background: #1a0a2e; color: #f0e6ff; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+
+#splash { position:fixed;inset:0;z-index:999;background:#1a0a2e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity 0.6s ease; }
+#splash.hide { opacity:0;pointer-events:none; }
+#splash-om { font-size:80px;animation:pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:0.8} }
+#splash h2 { font-family:'Crimson Pro',serif;font-size:28px;color:#f5d87a;font-weight:600; }
+#splash p { font-size:13px;color:#7a6090;font-style:italic;font-family:'Crimson Pro',serif; }
+
+.app { display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;width:100%;position:relative;overflow:hidden; }
+.mandala-bg { position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:300px;height:300px;opacity:0.05;pointer-events:none;z-index:0; }
+
+.header { text-align:center;padding:16px 16px 10px;position:relative;z-index:1;flex-shrink:0; }
+.header h1 { font-family:'Crimson Pro',serif;font-size:24px;font-weight:600;color:#f5d87a; }
+.header .subtitle { font-size:11px;color:#7a6090;font-style:italic;font-family:'Crimson Pro',serif; }
+.header .date { font-size:10px;color:#9b7fc0;margin-top:4px;letter-spacing:1px;text-transform:uppercase; }
+
+.tabs { display:flex;margin:0 14px 10px;background:rgba(255,255,255,0.06);border-radius:12px;padding:4px;position:relative;z-index:1;flex-shrink:0; }
+.tab { flex:1;text-align:center;padding:8px;border-radius:9px;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;color:#9b7fc0;border:none;background:none;font-family:'DM Sans',sans-serif; }
+.tab.active { background:rgba(245,216,122,0.15);color:#f5d87a; }
+
+.content { flex:1;overflow-y:auto;position:relative;z-index:1;-webkit-overflow-scrolling:touch;padding-bottom:24px; }
+
+.timer-card { margin:0 14px 12px;background:rgba(255,255,255,0.05);border-radius:18px;padding:16px;position:relative;overflow:hidden; }
+.timer-card::before { content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:18px 18px 0 0; }
+.card-0{border:0.5px solid rgba(245,216,122,0.25)}.card-0::before{background:linear-gradient(90deg,#f5d87a,#f0a060)}
+.card-1{border:0.5px solid rgba(167,139,250,0.25)}.card-1::before{background:linear-gradient(90deg,#a78bfa,#60a5fa)}
+.card-2{border:0.5px solid rgba(74,222,128,0.25)}.card-2::before{background:linear-gradient(90deg,#4ade80,#22d3ee)}
+.card-3{border:0.5px solid rgba(251,146,60,0.25)}.card-3::before{background:linear-gradient(90deg,#fb923c,#f43f5e)}
+.card-4{border:0.5px solid rgba(232,121,249,0.25)}.card-4::before{background:linear-gradient(90deg,#e879f9,#818cf8)}
+.lc0{color:#f5c842}.lc1{color:#a78bfa}.lc2{color:#4ade80}.lc3{color:#fb923c}.lc4{color:#e879f9}
+.cc0{color:#f5c842}.cc1{color:#c4b5fd}.cc2{color:#86efac}.cc3{color:#fdba74}.cc4{color:#f0abfc}
+.sc0{background:rgba(245,216,122,0.18);color:#f5d87a;border:0.5px solid rgba(245,216,122,0.45)}
+.sc1{background:rgba(167,139,250,0.18);color:#c4b5fd;border:0.5px solid rgba(167,139,250,0.45)}
+.sc2{background:rgba(74,222,128,0.18);color:#86efac;border:0.5px solid rgba(74,222,128,0.45)}
+.sc3{background:rgba(251,146,60,0.18);color:#fdba74;border:0.5px solid rgba(251,146,60,0.45)}
+.sc4{background:rgba(232,121,249,0.18);color:#f0abfc;border:0.5px solid rgba(232,121,249,0.45)}
+
+.timer-header { display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px; }
+.timer-label { font-family:'Crimson Pro',serif;font-size:17px;font-style:italic; }
+.timer-mantra { font-size:10px;color:#7a6090;margin-top:2px;font-style:italic;font-family:'Crimson Pro',serif; }
+.running-dot { width:9px;height:9px;border-radius:50%;background:transparent;transition:all 0.3s;margin-top:4px;flex-shrink:0; }
+.running-dot.active { background:#4ade80;box-shadow:0 0 8px #4ade80;animation:blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.2} }
+
+.timer-count-row { display:flex;align-items:center;gap:10px;margin-bottom:10px; }
+.timer-display { font-family:'Crimson Pro',serif;font-size:40px;font-weight:600;letter-spacing:2px;flex:1;font-variant-numeric:tabular-nums;color:#f0e6ff; }
+.count-box { background:rgba(255,255,255,0.08);border-radius:12px;padding:8px 12px;text-align:center;min-width:82px; }
+.count-label { font-size:9px;color:#7a6090;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:2px; }
+.count-value { font-family:'Crimson Pro',serif;font-size:28px;font-weight:600;font-variant-numeric:tabular-nums; }
+.count-sub { font-size:9px;color:#7a6090;margin-top:1px; }
+.mala-row { display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:8px;padding:7px 10px;margin-bottom:12px; }
+.mala-label { font-size:11px;color:#9b7fc0;flex:1; }
+.mala-value { font-size:13px;font-weight:500; }
+
+.timer-controls { display:flex;gap:10px; }
+.btn { padding:12px 20px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:transform 0.15s,opacity 0.15s;touch-action:manipulation;user-select:none;-webkit-user-select:none; }
+.btn:active { transform:scale(0.94);opacity:0.85; }
+.btn-start { flex:1; }
+.btn-start.running { background:rgba(239,68,68,0.2)!important;color:#fca5a5!important;border-color:rgba(239,68,68,0.45)!important; }
+.btn-reset { background:rgba(255,255,255,0.07);color:#9b7fc0;border:0.5px solid rgba(255,255,255,0.14);padding:12px 16px; }
+
+.save-section { margin:2px 14px 14px; }
+.save-note { font-size:11px;color:#7a6090;text-align:center;margin-bottom:8px;font-style:italic;font-family:'Crimson Pro',serif; }
+.btn-save-all { background:rgba(74,222,128,0.14);color:#86efac;border:0.5px solid rgba(74,222,128,0.35);width:100%;padding:14px;font-size:15px;font-family:'DM Sans',sans-serif;cursor:pointer;border-radius:14px;font-weight:500;transition:transform 0.15s;touch-action:manipulation; }
+.btn-save-all:active { transform:scale(0.98); }
+
+.toast { position:fixed;bottom:36px;left:50%;transform:translateX(-50%);background:rgba(74,222,128,0.95);color:#052e16;padding:11px 28px;border-radius:28px;font-size:14px;font-weight:500;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;z-index:200; }
+.toast.show { opacity:1; }
+
+.mala-alert { position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:#1a0a2e;border:1.5px solid #f5d87a;border-radius:20px;padding:24px 32px;text-align:center;z-index:300;opacity:0;pointer-events:none;transition:all 0.3s; }
+.mala-alert.show { opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:all; }
+.mala-alert-icon { font-size:44px;margin-bottom:8px; }
+.mala-alert-text { font-family:'Crimson Pro',serif;font-size:20px;color:#f5d87a;margin-bottom:4px; }
+.mala-alert-sub { font-size:13px;color:#9b7fc0;margin-bottom:16px; }
+.mala-alert-btn { background:rgba(245,216,122,0.18);color:#f5d87a;border:0.5px solid rgba(245,216,122,0.4);padding:10px 28px;border-radius:10px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif; }
+
+.history-view { padding:0 14px; }
+.section-title { font-family:'Crimson Pro',serif;font-size:20px;color:#f5d87a;margin-bottom:14px;text-align:center; }
+.history-empty { text-align:center;color:#7a6090;font-size:14px;padding:50px 0;line-height:1.9;font-family:'Crimson Pro',serif;font-style:italic; }
+.history-entry { background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px 16px;margin-bottom:12px; }
+.entry-date { font-size:11px;color:#9b7fc0;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px; }
+.entry-row { display:flex;justify-content:space-between;align-items:center;margin-bottom:7px; }
+.entry-name { font-size:13px;font-family:'Crimson Pro',serif;font-style:italic;display:flex;align-items:center;gap:7px; }
+.dot { width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0; }
+.entry-right { text-align:right; }
+.entry-time { font-size:14px;font-family:'Crimson Pro',serif;font-weight:600;color:#f0e6ff;display:block; }
+.entry-count { font-size:11px;color:#9b7fc0; }
+.entry-total { border-top:0.5px solid rgba(255,255,255,0.08);margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-size:12px;color:#7a6090; }
+.btn-clear { width:100%;margin-top:6px;padding:11px;border-radius:10px;font-size:13px;background:rgba(239,68,68,0.1);color:#fca5a5;border:0.5px solid rgba(239,68,68,0.2);cursor:pointer;font-family:'DM Sans',sans-serif;touch-action:manipulation; }
+
+.settings-view { padding:0 14px; }
+.settings-sub { font-size:11px;color:#7a6090;text-align:center;margin-bottom:16px;font-style:italic;font-family:'Crimson Pro',serif; }
+.japa-setting-card { background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px;margin-bottom:10px; }
+.japa-setting-top { display:flex;justify-content:space-between;align-items:center;margin-bottom:10px; }
+.japa-setting-name { font-family:'Crimson Pro',serif;font-size:16px;font-style:italic; }
+.btn-delete { background:rgba(239,68,68,0.12);color:#fca5a5;border:0.5px solid rgba(239,68,68,0.25);padding:5px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;touch-action:manipulation; }
+.setting-row { display:flex;align-items:center;gap:10px;margin-bottom:10px; }
+.setting-label { font-size:11px;color:#9b7fc0;width:80px;flex-shrink:0; }
+.setting-input { flex:1;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:9px 10px;color:#f0e6ff;font-size:14px;font-family:'DM Sans',sans-serif;outline:none; }
+.setting-input:focus { border-color:rgba(245,216,122,0.4); }
+.btn-update { background:rgba(245,216,122,0.15);color:#f5d87a;border:0.5px solid rgba(245,216,122,0.35);padding:9px 16px;border-radius:8px;font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;touch-action:manipulation; }
+.btn-update:active { transform:scale(0.97); }
+.add-japa-card { background:rgba(74,222,128,0.06);border:0.5px solid rgba(74,222,128,0.2);border-radius:14px;padding:14px;margin-bottom:10px; }
+.add-japa-title { font-family:'Crimson Pro',serif;font-size:15px;color:#86efac;margin-bottom:12px; }
+.btn-add-japa { background:rgba(74,222,128,0.15);color:#86efac;border:0.5px solid rgba(74,222,128,0.35);padding:10px;border-radius:10px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;font-weight:500;touch-action:manipulation; }
+.btn-add-japa:active { transform:scale(0.97); }
+.max-note { font-size:11px;color:#7a6090;text-align:center;margin-top:4px;font-style:italic;font-family:'Crimson Pro',serif; }
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div id="splash-om">🪔</div>
+  <h2>Japa Timer</h2>
+  <p>Om Tat Sat</p>
+</div>
+
+<div class="app">
+  <svg class="mandala-bg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="95" fill="none" stroke="#f5d87a" stroke-width="1"/>
+    <circle cx="100" cy="100" r="70" fill="none" stroke="#f5d87a" stroke-width="0.5"/>
+    <circle cx="100" cy="100" r="45" fill="none" stroke="#f5d87a" stroke-width="0.5"/>
+    <circle cx="100" cy="100" r="20" fill="none" stroke="#f5d87a" stroke-width="1"/>
+    <line x1="100" y1="5" x2="100" y2="195" stroke="#f5d87a" stroke-width="0.5"/>
+    <line x1="5" y1="100" x2="195" y2="100" stroke="#f5d87a" stroke-width="0.5"/>
+    <line x1="33" y1="33" x2="167" y2="167" stroke="#f5d87a" stroke-width="0.5"/>
+    <line x1="167" y1="33" x2="33" y2="167" stroke="#f5d87a" stroke-width="0.5"/>
+    <polygon points="100,10 120,80 190,100 120,120 100,190 80,120 10,100 80,80" fill="none" stroke="#f5d87a" stroke-width="0.5"/>
+    <polygon points="100,30 140,100 100,170 60,100" fill="none" stroke="#f5d87a" stroke-width="0.5"/>
+  </svg>
+  <div class="header">
+    <h1>🪔 Japa Timer</h1>
+    <div class="subtitle">Om Tat Sat</div>
+    <div class="date" id="today-date"></div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('timers')">Timers</button>
+    <button class="tab" onclick="switchTab('history')">Daily Log</button>
+    <button class="tab" onclick="switchTab('settings')">Settings</button>
+  </div>
+  <div class="content">
+    <div id="timers-view"></div>
+    <div id="history-view" class="history-view" style="display:none;">
+      <div class="section-title">Daily Log</div>
+      <div id="history-list"></div>
+    </div>
+    <div id="settings-view" class="settings-view" style="display:none;">
+      <div class="section-title">Manage Japa</div>
+      <div class="settings-sub">Edit name &amp; seconds per chant · Max 5 japas</div>
+      <div id="settings-list"></div>
+      <div class="add-japa-card" id="add-japa-section">
+        <div class="add-japa-title">➕ Add New Japa</div>
+        <div class="setting-row">
+          <span class="setting-label">Name</span>
+          <input class="setting-input" id="new-name" placeholder="e.g. Rama Japa" type="text">
+        </div>
+        <div class="setting-row">
+          <span class="setting-label">Seconds</span>
+          <input class="setting-input" id="new-secs" placeholder="e.g. 2.5" type="number" step="0.1" min="0.1">
+        </div>
+        <button class="btn-add-japa" onclick="addJapa()">Add Japa</button>
+      </div>
+      <div class="max-note" id="max-note" style="display:none;">Maximum 5 japas reached. Delete one to add new.</div>
+    </div>
+  </div>
+</div>
+
+<div class="mala-alert" id="mala-alert">
+  <div class="mala-alert-icon">🎉</div>
+  <div class="mala-alert-text" id="mala-alert-text">1 Mala Complete!</div>
+  <div class="mala-alert-sub" id="mala-alert-sub">108 chants done. Blessed!</div>
+  <button class="mala-alert-btn" onclick="closeMalaAlert()">Continue 🙏</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var MALA = 108;
+var DOT_COLORS = ['#f5c842','#a78bfa','#4ade80','#fb923c','#e879f9'];
+var DEFAULT_JAPAS = [
+  {name:'Gayathri Japa',    mantra:'Om Bhur Bhuva Svaha...',    secs:5.5},
+  {name:'Om Namah Shivaya', mantra:'Namas te Astu Bhagavan...', secs:1.2}
+];
+
+var japas = [];
+var timers = [];
+
+// ── Persistence ──────────────────────────────────────────
+function loadJapas() {
+  try { var s=JSON.parse(localStorage.getItem('japa_config')); if(s&&s.length) return s; } catch(e){}
+  return DEFAULT_JAPAS.map(function(j){return Object.assign({},j);});
+}
+function saveJapas(){ localStorage.setItem('japa_config',JSON.stringify(japas)); }
+
+function loadTimerState() {
+  try {
+    var s=JSON.parse(localStorage.getItem('japa_timer_state'));
+    if(s && s.date===getTodayKey() && s.timers) return s.timers;
+  } catch(e){}
+  return null;
+}
+function saveTimerState() {
+  localStorage.setItem('japa_timer_state', JSON.stringify({
+    date: getTodayKey(),
+    timers: timers.map(function(t){return {elapsed:t.elapsed, lastMala:t.lastMala};})
+  }));
+}
+
+// Save every 5 seconds and on app hide/close
+setInterval(saveTimerState, 5000);
+document.addEventListener('visibilitychange', function(){ if(document.hidden) saveTimerState(); });
+window.addEventListener('pagehide', saveTimerState);
+window.addEventListener('beforeunload', saveTimerState);
+
+// ── Init ─────────────────────────────────────────────────
+function init() {
+  japas = loadJapas();
+  var saved = loadTimerState();
+  timers = japas.map(function(j,i){
+    var s = saved && saved[i];
+    return { elapsed:s?(s.elapsed||0):0, lastMala:s?(s.lastMala||0):0, running:false, interval:null };
+  });
+  renderTimers();
+  renderSettings();
+  setTimeout(function(){
+    document.getElementById('splash').classList.add('hide');
+    setTimeout(function(){document.getElementById('splash').style.display='none';},700);
+  },1500);
+}
+
+// ── Helpers ───────────────────────────────────────────────
+function pad(n){return String(Math.floor(n)).padStart(2,'0');}
+function fmtTime(ms){var s=Math.floor(ms/1000);return pad(s/3600)+':'+pad((s%3600)/60)+':'+pad(s%60);}
+function fmtShort(ms){var s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;if(h>0)return h+'h '+m+'m '+sec+'s';if(m>0)return m+'m '+sec+'s';return sec+'s';}
+function getCount(i){return Math.floor(timers[i].elapsed/1000/japas[i].secs);}
+function getMala(i){return Math.floor(getCount(i)/MALA);}
+function getTodayKey(){return new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
+
+// ── Render Timers ─────────────────────────────────────────
+function renderTimers() {
+  var html='';
+  japas.forEach(function(j,i){
+    var c=i%5;
+    html+='<div class="timer-card card-'+c+'">'+
+      '<div class="timer-header"><div>'+
+        '<div class="timer-label lc'+c+'">'+j.name+'</div>'+
+        '<div class="timer-mantra">'+j.secs+'s per chant</div>'+
+      '</div><span class="running-dot" id="dot'+i+'"></span></div>'+
+      '<div class="timer-count-row">'+
+        '<div class="timer-display" id="display'+i+'">'+fmtTime(timers[i].elapsed)+'</div>'+
+        '<div class="count-box"><div class="count-label">Count</div>'+
+          '<div class="count-value cc'+c+'" id="count'+i+'">'+getCount(i)+'</div>'+
+          '<div class="count-sub">chants</div></div>'+
+      '</div>'+
+      '<div class="mala-row"><span class="mala-label">🧿 Malas completed (108)</span>'+
+        '<span class="mala-value lc'+c+'" id="mala'+i+'">'+getMala(i)+'</span></div>'+
+      '<div class="timer-controls">'+
+        '<button class="btn btn-start sc'+c+'" id="btn'+i+'" onclick="toggle('+i+')">▶  Start</button>'+
+        '<button class="btn btn-reset" onclick="resetTimer('+i+')">↺  Reset</button>'+
+      '</div></div>';
+  });
+  html+='<div class="save-section"><div class="save-note">Save all timers to today\'s log</div>'+
+    '<button class="btn-save-all" onclick="saveToday()">🙏  Save Today\'s Japa</button></div>';
+  document.getElementById('timers-view').innerHTML=html;
+}
+
+// ── Timer Logic ───────────────────────────────────────────
+function updateDisplay(i) {
+  var count=getCount(i), mala=getMala(i);
+  document.getElementById('display'+i).textContent=fmtTime(timers[i].elapsed);
+  document.getElementById('count'+i).textContent=count;
+  document.getElementById('mala'+i).textContent=mala;
+  if(mala>timers[i].lastMala){timers[i].lastMala=mala;showMalaAlert(mala,japas[i].name);vibrate();}
+}
+
+function toggle(i) {
+  var t=timers[i], btn=document.getElementById('btn'+i), dot=document.getElementById('dot'+i);
+  if(t.running){
+    clearInterval(t.interval); t.running=false;
+    btn.innerHTML='▶&nbsp; Resume'; btn.classList.remove('running'); dot.classList.remove('active');
+    saveTimerState();
+  } else {
+    var base=t.elapsed, start=Date.now();
+    t.interval=setInterval(function(){t.elapsed=base+(Date.now()-start);updateDisplay(i);},200);
+    t.running=true; btn.innerHTML='⏸&nbsp; Pause'; btn.classList.add('running'); dot.classList.add('active');
+  }
+}
+
+function resetTimer(i) {
+  var t=timers[i];
+  if(t.running){clearInterval(t.interval);t.running=false;document.getElementById('dot'+i).classList.remove('active');}
+  t.elapsed=0;t.lastMala=0;
+  document.getElementById('btn'+i).innerHTML='▶&nbsp; Start';
+  document.getElementById('btn'+i).classList.remove('running');
+  updateDisplay(i); saveTimerState();
+}
+
+function vibrate(){if(navigator.vibrate)navigator.vibrate([200,100,200,100,400]);}
+function showMalaAlert(mala,name){
+  document.getElementById('mala-alert-text').textContent=mala+' Mala Complete!';
+  document.getElementById('mala-alert-sub').textContent=(mala*MALA)+' '+name+' chants. Blessed!';
+  var el=document.getElementById('mala-alert');el.classList.add('show');
+  setTimeout(function(){el.classList.remove('show');},4000);
+}
+function closeMalaAlert(){document.getElementById('mala-alert').classList.remove('show');}
+
+// ── Save / History ────────────────────────────────────────
+function saveToday() {
+  if(!timers.some(function(t){return t.elapsed>0;})){showToast('No time recorded yet!');return;}
+  var history=getHistory(), today=getTodayKey();
+  history[today]={savedAt:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+    japas:japas.map(function(j,i){return{name:j.name,elapsed:timers[i].elapsed,count:getCount(i),mala:getMala(i)};})};
+  saveHistory(history); showToast('Saved! 🙏 Jai Mahadeva'); vibrate();
+}
+function getHistory(){try{return JSON.parse(localStorage.getItem('japa_history')||'{}');}catch(e){return {};}}
+function saveHistory(h){try{localStorage.setItem('japa_history',JSON.stringify(h));}catch(e){}}
+
+function renderHistory() {
+  var history=getHistory(), keys=Object.keys(history).reverse(), list=document.getElementById('history-list');
+  if(!keys.length){list.innerHTML='<div class="history-empty">No sessions saved yet.<br>Complete your japa and tap Save.</div>';return;}
+  var html=keys.map(function(k){
+    var d=history[k], total=0, rows='';
+    var jd=d.japas||[{name:'Gayathri',elapsed:d.gayathri||0,count:d.gayathri_count||0,mala:d.gayathri_mala||0},{name:'Om Namah Shivaya',elapsed:d.shiva||0,count:d.shiva_count||0,mala:d.shiva_mala||0}];
+    jd.forEach(function(j,i){total+=j.elapsed||0;
+      rows+='<div class="entry-row"><span class="entry-name"><span class="dot" style="background:'+DOT_COLORS[i%5]+'"></span>'+j.name+'</span>'+
+        '<div class="entry-right"><span class="entry-time">'+fmtShort(j.elapsed||0)+'</span>'+
+        '<span class="entry-count">'+(j.count||0)+' chants · '+(j.mala||0)+' mala</span></div></div>';
+    });
+    return '<div class="history-entry"><div class="entry-date">'+k+(d.savedAt?' · '+d.savedAt:'')+'</div>'+rows+
+      '<div class="entry-total"><span>Total session</span><span>'+fmtShort(total)+'</span></div></div>';
+  }).join('');
+  html+='<button class="btn-clear" onclick="clearHistory()">Clear all history</button>';
+  list.innerHTML=html;
+}
+function clearHistory(){if(confirm('Clear all saved history?')){localStorage.removeItem('japa_history');renderHistory();}}
+
+// ── Settings ──────────────────────────────────────────────
+function renderSettings() {
+  var html='';
+  japas.forEach(function(j,i){
+    var c=i%5;
+    html+='<div class="japa-setting-card"><div class="japa-setting-top">'+
+      '<div class="japa-setting-name lc'+c+'">'+j.name+'</div>'+
+      (japas.length>1?'<button class="btn-delete" onclick="deleteJapa('+i+')">Delete</button>':'')+
+      '</div>'+
+      '<div class="setting-row"><span class="setting-label">Name</span><input class="setting-input" id="sname'+i+'" value="'+j.name+'" type="text"></div>'+
+      '<div class="setting-row"><span class="setting-label">Seconds</span><input class="setting-input" id="ssecs'+i+'" value="'+j.secs+'" type="number" step="0.1" min="0.1"></div>'+
+      '<button class="btn-update" onclick="updateJapa('+i+')">✓ Update</button></div>';
+  });
+  document.getElementById('settings-list').innerHTML=html;
+  var atMax=japas.length>=5;
+  document.getElementById('add-japa-section').style.display=atMax?'none':'block';
+  document.getElementById('max-note').style.display=atMax?'block':'none';
+}
+
+function updateJapa(i) {
+  var name=document.getElementById('sname'+i).value.trim();
+  var secs=parseFloat(document.getElementById('ssecs'+i).value);
+  if(!name){showToast('Please enter a name');return;}
+  if(!secs||secs<=0){showToast('Please enter valid seconds');return;}
+  japas[i].name=name; japas[i].secs=secs; japas[i].mantra=secs+'s per chant';
+  saveJapas(); renderTimers(); renderSettings(); showToast('Updated! 🙏');
+}
+
+function deleteJapa(i) {
+  if(japas.length<=1){showToast('At least 1 japa required');return;}
+  if(!confirm('Delete "'+japas[i].name+'"?'))return;
+  japas.splice(i,1); timers.splice(i,1);
+  saveJapas(); saveTimerState(); renderTimers(); renderSettings(); showToast('Deleted');
+}
+
+function addJapa() {
+  if(japas.length>=5){showToast('Maximum 5 japas');return;}
+  var name=document.getElementById('new-name').value.trim();
+  var secs=parseFloat(document.getElementById('new-secs').value);
+  if(!name){showToast('Please enter a name');return;}
+  if(!secs||secs<=0){showToast('Please enter valid seconds');return;}
+  japas.push({name:name,mantra:secs+'s per chant',secs:secs});
+  timers.push({elapsed:0,running:false,interval:null,lastMala:0});
+  saveJapas();
+  document.getElementById('new-name').value='';
+  document.getElementById('new-secs').value='';
+  renderTimers(); renderSettings(); showToast(name+' added! 🙏');
+}
+
+// ── UI ────────────────────────────────────────────────────
+function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
+function switchTab(tab){
+  document.querySelectorAll('.tab').forEach(function(t,i){t.classList.toggle('active',['timers','history','settings'][i]===tab);});
+  document.getElementById('timers-view').style.display=tab==='timers'?'block':'none';
+  document.getElementById('history-view').style.display=tab==='history'?'block':'none';
+  document.getElementById('settings-view').style.display=tab==='settings'?'block':'none';
+  if(tab==='history')renderHistory();
+}
+
+document.getElementById('today-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}
+
+init();
+</script>
+</body>
+</html>
