@@ -1,741 +1,538 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#1a0a2e">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Japa Timer">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<title>Japa Timer</title>
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@400;500&family=Noto+Sans+Kannada:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Japa Timer — User Guide</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-html, body { height: 100%; overscroll-behavior: none; }
-body { font-family: 'DM Sans', 'Noto Sans Kannada', sans-serif; background: #1a0a2e; color: #f0e6ff; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
-
-/* Splash */
-#splash { position:fixed;inset:0;z-index:999;background:#1a0a2e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity 0.6s ease; }
-#splash.hide { opacity:0;pointer-events:none; }
-#splash-om { font-size:80px;animation:pulse 1.5s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:0.8} }
-#splash h2 { font-family:'Crimson Pro',serif;font-size:28px;color:#f5d87a;font-weight:600; }
-#splash p { font-size:13px;color:#7a6090;font-style:italic;font-family:'Noto Sans Kannada',sans-serif; }
-
-.app { display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;width:100%;position:relative;overflow:hidden; }
-.mandala-bg { position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:300px;height:300px;opacity:0.05;pointer-events:none;z-index:0; }
-
-/* Header */
-.header { padding:14px 16px 8px;position:relative;z-index:1;flex-shrink:0;display:flex;align-items:center;justify-content:space-between; }
-.header-center { text-align:center;flex:1; }
-.header h1 { font-family:'Crimson Pro',serif;font-size:22px;font-weight:600;color:#f5d87a; }
-.header .subtitle { font-size:10px;color:#7a6090;font-style:italic;font-family:'Noto Sans Kannada',sans-serif; }
-.header .date { font-size:10px;color:#9b7fc0;margin-top:3px;letter-spacing:0.5px; }
-.lang-toggle { background:rgba(245,216,122,0.12);border:0.5px solid rgba(245,216,122,0.3);color:#f5d87a;padding:5px 10px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;flex-shrink:0; }
-.lang-toggle:active { transform:scale(0.95); }
-
-/* Tabs */
-.tabs { display:flex;margin:0 14px 8px;background:rgba(255,255,255,0.06);border-radius:12px;padding:3px;position:relative;z-index:1;flex-shrink:0; }
-.tab { flex:1;text-align:center;padding:7px 2px;border-radius:9px;font-size:11px;font-weight:500;cursor:pointer;transition:all 0.2s;color:#9b7fc0;border:none;background:none;font-family:'DM Sans','Noto Sans Kannada',sans-serif; }
-.tab.active { background:rgba(245,216,122,0.15);color:#f5d87a; }
-
-/* Content */
-.content { flex:1;overflow-y:auto;position:relative;z-index:1;-webkit-overflow-scrolling:touch;padding-bottom:28px; }
-
-/* Timer cards */
-.timer-card { margin:0 14px 12px;background:rgba(255,255,255,0.05);border-radius:18px;padding:15px;position:relative;overflow:hidden; }
-.timer-card::before { content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:18px 18px 0 0; }
-.card-0{border:0.5px solid rgba(245,216,122,0.25)}.card-0::before{background:linear-gradient(90deg,#f5d87a,#f0a060)}
-.card-1{border:0.5px solid rgba(167,139,250,0.25)}.card-1::before{background:linear-gradient(90deg,#a78bfa,#60a5fa)}
-.card-2{border:0.5px solid rgba(74,222,128,0.25)}.card-2::before{background:linear-gradient(90deg,#4ade80,#22d3ee)}
-.card-3{border:0.5px solid rgba(251,146,60,0.25)}.card-3::before{background:linear-gradient(90deg,#fb923c,#f43f5e)}
-.card-4{border:0.5px solid rgba(232,121,249,0.25)}.card-4::before{background:linear-gradient(90deg,#e879f9,#818cf8)}
-.lc0{color:#f5c842}.lc1{color:#a78bfa}.lc2{color:#4ade80}.lc3{color:#fb923c}.lc4{color:#e879f9}
-.cc0{color:#f5c842}.cc1{color:#c4b5fd}.cc2{color:#86efac}.cc3{color:#fdba74}.cc4{color:#f0abfc}
-.sc0{background:rgba(245,216,122,0.18);color:#f5d87a;border:0.5px solid rgba(245,216,122,0.45)}
-.sc1{background:rgba(167,139,250,0.18);color:#c4b5fd;border:0.5px solid rgba(167,139,250,0.45)}
-.sc2{background:rgba(74,222,128,0.18);color:#86efac;border:0.5px solid rgba(74,222,128,0.45)}
-.sc3{background:rgba(251,146,60,0.18);color:#fdba74;border:0.5px solid rgba(251,146,60,0.45)}
-.sc4{background:rgba(232,121,249,0.18);color:#f0abfc;border:0.5px solid rgba(232,121,249,0.45)}
-
-.timer-header { display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px; }
-.timer-label { font-family:'Noto Sans Kannada','Crimson Pro',serif;font-size:15px;font-weight:600; }
-.timer-label-sub { font-size:10px;color:#7a6090;margin-top:1px;font-family:'Noto Sans Kannada',sans-serif; }
-.running-dot { width:9px;height:9px;border-radius:50%;background:transparent;transition:all 0.3s;margin-top:4px;flex-shrink:0; }
-.running-dot.active { background:#4ade80;box-shadow:0 0 8px #4ade80;animation:blink 1s infinite; }
-@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.2} }
-
-.timer-count-row { display:flex;align-items:center;gap:8px;margin-bottom:8px; }
-.timer-display { font-family:'Crimson Pro',serif;font-size:38px;font-weight:600;letter-spacing:2px;flex:1;font-variant-numeric:tabular-nums;color:#f0e6ff; }
-.count-box { background:rgba(255,255,255,0.08);border-radius:12px;padding:6px 10px;text-align:center;min-width:78px; }
-.count-label { font-size:9px;color:#7a6090;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:1px;font-family:'Noto Sans Kannada',sans-serif; }
-.count-value { font-family:'Crimson Pro',serif;font-size:26px;font-weight:600;font-variant-numeric:tabular-nums; }
-.count-sub { font-size:9px;color:#7a6090;margin-top:1px;font-family:'Noto Sans Kannada',sans-serif; }
-
-/* Progress bar */
-.progress-section { margin-bottom:8px; }
-.progress-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:4px; }
-.progress-label { font-size:10px;color:#9b7fc0;font-family:'Noto Sans Kannada',sans-serif; }
-.progress-pct { font-size:11px;font-weight:600; }
-.progress-bar-bg { height:5px;background:rgba(255,255,255,0.08);border-radius:10px;overflow:hidden; }
-.progress-bar-fill { height:100%;border-radius:10px;transition:width 0.5s ease;min-width:0; }
-.fill-0{background:linear-gradient(90deg,#f5d87a,#f0a060)}
-.fill-1{background:linear-gradient(90deg,#a78bfa,#60a5fa)}
-.fill-2{background:linear-gradient(90deg,#4ade80,#22d3ee)}
-.fill-3{background:linear-gradient(90deg,#fb923c,#f43f5e)}
-.fill-4{background:linear-gradient(90deg,#e879f9,#818cf8)}
-.progress-counts { font-size:10px;color:#7a6090;margin-top:2px;font-family:'Noto Sans Kannada',sans-serif; }
-
-.mala-row { display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border-radius:8px;padding:6px 10px;margin-bottom:10px; }
-.mala-label { font-size:11px;color:#9b7fc0;flex:1;font-family:'Noto Sans Kannada',sans-serif; }
-.mala-value { font-size:13px;font-weight:500; }
-
-.timer-controls { display:flex;gap:8px; }
-.btn { padding:11px 16px;border-radius:12px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:'DM Sans','Noto Sans Kannada',sans-serif;transition:transform 0.15s,opacity 0.15s;touch-action:manipulation;user-select:none;-webkit-user-select:none; }
-.btn:active { transform:scale(0.94);opacity:0.85; }
-.btn-start { flex:1; }
-.btn-start.running { background:rgba(239,68,68,0.2)!important;color:#fca5a5!important;border-color:rgba(239,68,68,0.45)!important; }
-.btn-reset { background:rgba(255,255,255,0.07);color:#9b7fc0;border:0.5px solid rgba(255,255,255,0.14);padding:11px 14px; }
-
-.save-section { margin:2px 14px 14px; }
-.save-note { font-size:11px;color:#7a6090;text-align:center;margin-bottom:8px;font-family:'Noto Sans Kannada',sans-serif; }
-.btn-save-all { background:rgba(74,222,128,0.14);color:#86efac;border:0.5px solid rgba(74,222,128,0.35);width:100%;padding:13px;font-size:14px;font-family:'DM Sans','Noto Sans Kannada',sans-serif;cursor:pointer;border-radius:14px;font-weight:500;transition:transform 0.15s;touch-action:manipulation; }
-.btn-save-all:active { transform:scale(0.98); }
-
-/* Toast */
-.toast { position:fixed;bottom:36px;left:50%;transform:translateX(-50%);background:rgba(74,222,128,0.95);color:#052e16;padding:11px 24px;border-radius:28px;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;z-index:200;font-family:'Noto Sans Kannada',sans-serif;max-width:90%; }
-.toast.show { opacity:1; }
-
-/* Mala alert */
-.mala-alert { position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.8);background:#1a0a2e;border:1.5px solid #f5d87a;border-radius:20px;padding:22px 28px;text-align:center;z-index:300;opacity:0;pointer-events:none;transition:all 0.3s;width:80%; }
-.mala-alert.show { opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:all; }
-.mala-alert-icon { font-size:40px;margin-bottom:8px; }
-.mala-alert-text { font-family:'Noto Sans Kannada',sans-serif;font-size:18px;color:#f5d87a;margin-bottom:4px;font-weight:600; }
-.mala-alert-sub { font-size:12px;color:#9b7fc0;margin-bottom:14px;font-family:'Noto Sans Kannada',sans-serif; }
-.mala-alert-btn { background:rgba(245,216,122,0.18);color:#f5d87a;border:0.5px solid rgba(245,216,122,0.4);padding:9px 24px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans Kannada',sans-serif; }
-
-/* History */
-.history-view,.settings-view { padding:0 14px; }
-.section-title { font-family:'Noto Sans Kannada',sans-serif;font-size:18px;color:#f5d87a;margin-bottom:12px;text-align:center;font-weight:600; }
-.history-empty { text-align:center;color:#7a6090;font-size:13px;padding:40px 0;line-height:2;font-family:'Noto Sans Kannada',sans-serif; }
-.history-entry { background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);border-radius:14px;padding:12px 14px;margin-bottom:10px; }
-.entry-date { font-size:10px;color:#9b7fc0;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px; }
-.entry-row { display:flex;justify-content:space-between;align-items:center;margin-bottom:6px; }
-.entry-name { font-size:12px;font-family:'Noto Sans Kannada',sans-serif;display:flex;align-items:center;gap:6px; }
-.dot { width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0; }
-.entry-right { text-align:right; }
-.entry-time { font-size:13px;font-family:'Crimson Pro',serif;font-weight:600;color:#f0e6ff;display:block; }
-.entry-count { font-size:10px;color:#9b7fc0; }
-.entry-total { border-top:0.5px solid rgba(255,255,255,0.08);margin-top:6px;padding-top:6px;display:flex;justify-content:space-between;font-size:11px;color:#7a6090; }
-.btn-clear { width:100%;margin-top:6px;padding:10px;border-radius:10px;font-size:12px;background:rgba(239,68,68,0.1);color:#fca5a5;border:0.5px solid rgba(239,68,68,0.2);cursor:pointer;font-family:'Noto Sans Kannada',sans-serif;touch-action:manipulation; }
-
-/* Settings */
-.settings-sub { font-size:11px;color:#7a6090;text-align:center;margin-bottom:14px;font-family:'Noto Sans Kannada',sans-serif; }
-.settings-section-label { font-size:11px;color:#f5d87a;letter-spacing:1px;text-transform:uppercase;margin:14px 0 8px;font-weight:600; }
-
-.setting-card { background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px;margin-bottom:10px; }
-.setting-card-title { font-family:'Noto Sans Kannada',sans-serif;font-size:14px;font-weight:600;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center; }
-.setting-row { display:flex;align-items:center;gap:10px;margin-bottom:10px; }
-.setting-label { font-size:11px;color:#9b7fc0;width:90px;flex-shrink:0;font-family:'Noto Sans Kannada',sans-serif; }
-.setting-input { flex:1;background:rgba(255,255,255,0.07);border:0.5px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 10px;color:#f0e6ff;font-size:13px;font-family:'DM Sans','Noto Sans Kannada',sans-serif;outline:none; }
-.setting-input:focus { border-color:rgba(245,216,122,0.4); }
-.setting-input-kannada { font-family:'Noto Sans Kannada',sans-serif;font-size:13px; }
-.btn-update { background:rgba(245,216,122,0.15);color:#f5d87a;border:0.5px solid rgba(245,216,122,0.35);padding:9px 16px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans Kannada',sans-serif;width:100%;touch-action:manipulation;font-weight:500; }
-.btn-update:active { transform:scale(0.97); }
-.btn-delete { background:rgba(239,68,68,0.12);color:#fca5a5;border:0.5px solid rgba(239,68,68,0.25);padding:5px 10px;border-radius:8px;font-size:11px;cursor:pointer;font-family:'Noto Sans Kannada',sans-serif;touch-action:manipulation; }
-
-/* Notification settings card */
-.notif-card { background:rgba(74,222,128,0.05);border:0.5px solid rgba(74,222,128,0.2);border-radius:14px;padding:14px;margin-bottom:10px; }
-.notif-card-title { font-size:14px;color:#86efac;font-weight:600;margin-bottom:12px;font-family:'Noto Sans Kannada',sans-serif; }
-.notif-status { font-size:11px;padding:4px 10px;border-radius:6px;font-family:'Noto Sans Kannada',sans-serif; }
-.notif-status.granted { background:rgba(74,222,128,0.15);color:#86efac; }
-.notif-status.denied { background:rgba(239,68,68,0.15);color:#fca5a5; }
-.notif-status.default { background:rgba(245,216,122,0.15);color:#f5d87a; }
-.btn-notif-enable { background:rgba(74,222,128,0.15);color:#86efac;border:0.5px solid rgba(74,222,128,0.35);padding:9px;border-radius:8px;font-size:12px;cursor:pointer;font-family:'Noto Sans Kannada',sans-serif;width:100%;margin-top:6px;font-weight:500; }
-
-/* Toggle switch */
-.toggle-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:10px; }
-.toggle-label { font-size:12px;color:#c4a0f0;font-family:'Noto Sans Kannada',sans-serif; }
-.toggle { position:relative;width:40px;height:22px;flex-shrink:0; }
-.toggle input { opacity:0;width:0;height:0; }
-.toggle-slider { position:absolute;cursor:pointer;inset:0;background:rgba(255,255,255,0.1);border-radius:22px;transition:0.3s; }
-.toggle-slider::before { position:absolute;content:'';height:16px;width:16px;left:3px;bottom:3px;background:#9b7fc0;border-radius:50%;transition:0.3s; }
-.toggle input:checked + .toggle-slider { background:rgba(74,222,128,0.3); }
-.toggle input:checked + .toggle-slider::before { transform:translateX(18px);background:#4ade80; }
-
-.add-japa-card { background:rgba(74,222,128,0.06);border:0.5px solid rgba(74,222,128,0.2);border-radius:14px;padding:14px;margin-bottom:10px; }
-.add-japa-title { font-size:14px;color:#86efac;margin-bottom:12px;font-weight:600;font-family:'Noto Sans Kannada',sans-serif; }
-.btn-add-japa { background:rgba(74,222,128,0.15);color:#86efac;border:0.5px solid rgba(74,222,128,0.35);padding:10px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Noto Sans Kannada',sans-serif;width:100%;font-weight:500;touch-action:manipulation; }
-.btn-add-japa:active { transform:scale(0.97); }
-.max-note { font-size:11px;color:#7a6090;text-align:center;margin-top:4px;font-family:'Noto Sans Kannada',sans-serif; }
+  :root {
+    --saffron: #FF6B35;
+    --deep: #333B14;
+    --cream: #FFF8EE;
+    --ink: #2C1810;
+    --muted: #6B5B4A;
+    --line: #E8DCC4;
+    --accent: #B8860B;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  header {
+    background: linear-gradient(135deg, var(--deep) 0%, #4a5320 100%);
+    color: var(--cream);
+    padding: 40px 24px;
+    text-align: center;
+    border-bottom: 4px solid var(--saffron);
+  }
+  header .lamp { font-size: 56px; line-height: 1; }
+  header h1 { margin: 8px 0 4px; font-size: 32px; letter-spacing: 0.5px; }
+  header .subtitle { opacity: 0.85; font-size: 15px; }
+  main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  section {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(51,59,20,0.06);
+  }
+  h2 {
+    margin: 0 0 14px;
+    color: var(--deep);
+    font-size: 22px;
+    border-bottom: 2px solid var(--saffron);
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h3 {
+    color: var(--deep);
+    font-size: 17px;
+    margin: 18px 0 8px;
+  }
+  p { margin: 8px 0; }
+  ul { padding-left: 22px; margin: 8px 0; }
+  li { margin: 6px 0; }
+  code {
+    background: #f3ecd8;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 13px;
+    color: var(--deep);
+  }
+  pre {
+    background: var(--deep);
+    color: #f0e6c8;
+    padding: 14px 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  pre code { background: transparent; color: inherit; padding: 0; }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .feature {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .feature-icon { font-size: 26px; margin-bottom: 6px; }
+  .feature-title {
+    font-weight: 600;
+    color: var(--deep);
+    margin-bottom: 4px;
+  }
+  .feature-desc {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin: 14px 0;
+    padding: 12px;
+    background: var(--cream);
+    border-radius: 8px;
+    border-left: 3px solid var(--saffron);
+  }
+  .step-num {
+    background: var(--saffron);
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+  .step-body { flex: 1; }
+  .step-body strong { color: var(--deep); }
+  .note {
+    background: #fff3d6;
+    border-left: 4px solid var(--accent);
+    padding: 12px 14px;
+    border-radius: 6px;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  .note strong { color: var(--deep); }
+  .warning {
+    background: #ffe9e0;
+    border-left: 4px solid var(--saffron);
+    padding: 12px 14px;
+    border-radius: 6px;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    background: var(--cream);
+    color: var(--deep);
+    font-weight: 600;
+  }
+  tr:last-child td { border-bottom: none; }
+  .badge {
+    display: inline-block;
+    background: var(--saffron);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-new { background: #28a745; }
+  .badge-fix { background: #17a2b8; }
+  .download-hero {
+    text-align: center;
+    background: linear-gradient(135deg, #fff3d6 0%, #ffe9c8 100%);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .download-hero h2 {
+    border: none;
+    padding: 0;
+    margin: 0 0 6px;
+    font-size: 20px;
+    justify-content: center;
+  }
+  .download-hero p {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 14px;
+  }
+  .btn-download {
+    display: inline-block;
+    background: var(--saffron);
+    color: white;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 12px rgba(255,107,53,0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-download:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(255,107,53,0.45);
+  }
+  .btn-download .icon { font-size: 18px; margin-right: 6px; }
+  .download-meta {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .download-meta code {
+    font-size: 12px;
+  }
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 14px;
+    border-top: 1px solid var(--line);
+    margin-top: 20px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  .toc {
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+  .toc ol { margin: 4px 0; padding-left: 22px; }
+  .toc a { color: var(--deep); text-decoration: none; }
+  .toc a:hover { color: var(--saffron); }
+  .contact {
+    text-align: center;
+    background: linear-gradient(135deg, var(--cream) 0%, #fff3d6 100%);
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+  }
+  .contact-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--deep);
+    margin-bottom: 6px;
+  }
+  .contact-row { font-size: 14px; margin: 4px 0; }
+  .contact-row a { color: var(--accent); text-decoration: none; }
 </style>
 </head>
 <body>
 
-<div id="splash">
-  <div id="splash-om">🪔</div>
-  <h2>Japa Timer</h2>
-  <p id="splash-sub">ಓಂ ತತ್ ಸತ್</p>
-</div>
+<header>
+  <div class="lamp">🪔</div>
+  <h1>Japa Timer</h1>
+  <div class="subtitle">A simple companion for your daily japa &amp; meditation practice</div>
+</header>
 
-<div class="app">
-  <svg class="mandala-bg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="100" cy="100" r="95" fill="none" stroke="#f5d87a" stroke-width="1"/>
-    <circle cx="100" cy="100" r="70" fill="none" stroke="#f5d87a" stroke-width="0.5"/>
-    <circle cx="100" cy="100" r="45" fill="none" stroke="#f5d87a" stroke-width="0.5"/>
-    <circle cx="100" cy="100" r="20" fill="none" stroke="#f5d87a" stroke-width="1"/>
-    <line x1="100" y1="5" x2="100" y2="195" stroke="#f5d87a" stroke-width="0.5"/>
-    <line x1="5" y1="100" x2="195" y2="100" stroke="#f5d87a" stroke-width="0.5"/>
-    <line x1="33" y1="33" x2="167" y2="167" stroke="#f5d87a" stroke-width="0.5"/>
-    <line x1="167" y1="33" x2="33" y2="167" stroke="#f5d87a" stroke-width="0.5"/>
-    <polygon points="100,10 120,80 190,100 120,120 100,190 80,120 10,100 80,80" fill="none" stroke="#f5d87a" stroke-width="0.5"/>
-  </svg>
+<main>
 
-  <div class="header">
-    <div class="header-center">
-      <h1>🪔 <span id="hdr-title">Japa Timer</span></h1>
-      <div class="subtitle" id="hdr-subtitle">Om Tat Sat</div>
-      <div class="date" id="today-date"></div>
+  <section class="download-hero">
+    <h2>📥 Download the App</h2>
+    <p>Latest build of Japa Timer for Android phones &amp; tablets.</p>
+    <a class="btn-download" href="shivapriya-japa.apk" download>
+      <span class="icon">⬇️</span> Download APK
+    </a>
+    <div class="download-meta">
+      File: <code>shivapriya-japa.apk</code> · Android 7.0+ · See installation steps below
     </div>
-    <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">ಕನ್ನಡ</button>
-  </div>
+  </section>
 
-  <div class="tabs">
-    <button class="tab active" id="tab-timers" onclick="switchTab('timers')"><span data-en="Timers" data-kn="ಟೈಮರ್">Timers</span></button>
-    <button class="tab" id="tab-history" onclick="switchTab('history')"><span data-en="Daily Log" data-kn="ದಿನದ ದಾಖಲೆ">Daily Log</span></button>
-    <button class="tab" id="tab-settings" onclick="switchTab('settings')"><span data-en="Settings" data-kn="ಸೆಟ್ಟಿಂಗ್ಸ್">Settings</span></button>
-  </div>
+  <section class="toc">
+    <h2 style="border:none; padding:0; margin:0 0 8px;">📖 Contents</h2>
+    <ol>
+      <li><a href="#install">Installing the app</a></li>
+      <li><a href="#features">What it does</a></li>
+      <li><a href="#firstuse">First-time setup</a></li>
+      <li><a href="#daily">Daily use</a></li>
+      <li><a href="#audio">Adding audio (nama / mantra)</a></li>
+      <li><a href="#settings">Settings explained</a></li>
+      <li><a href="#display">Keeping the screen on</a></li>
+      <li><a href="#troubleshoot">Troubleshooting</a></li>
+      <li><a href="#about">About / Contact</a></li>
+    </ol>
+  </section>
 
-  <div class="content">
-    <div id="timers-view"></div>
+  <section id="install">
+    <h2>📲 Installing the App</h2>
 
-    <div id="history-view" class="history-view" style="display:none;">
-      <div class="section-title" data-en="Daily Log" data-kn="ದಿನದ ದಾಖಲೆ">Daily Log</div>
-      <div id="history-list"></div>
-    </div>
-
-    <div id="settings-view" class="settings-view" style="display:none;">
-      <div class="section-title" data-en="Settings" data-kn="ಸೆಟ್ಟಿಂಗ್ಸ್">Settings</div>
-
-      <!-- Notification Settings -->
-      <div class="notif-card">
-        <div class="notif-card-title">
-          🔔 <span data-en="Reminder Notifications" data-kn="ಜ್ಞಾಪನೆ ಅಧಿಸೂಚನೆ">Reminder Notifications</span>
-        </div>
-        <div class="setting-row">
-          <span class="setting-label" data-en="Permission" data-kn="ಅನುಮತಿ">Permission</span>
-          <span class="notif-status" id="notif-status-badge">Checking...</span>
-        </div>
-        <div class="toggle-row">
-          <span class="toggle-label" data-en="Enable reminders" data-kn="ಜ್ಞಾಪನೆ ಚಾಲನೆ">Enable reminders</span>
-          <label class="toggle"><input type="checkbox" id="notif-enabled" onchange="saveNotifSettings()"><span class="toggle-slider"></span></label>
-        </div>
-        <div class="setting-row">
-          <span class="setting-label" data-en="Every (mins)" data-kn="ಪ್ರತಿ (ನಿಮಿ)">Every (mins)</span>
-          <input class="setting-input" id="notif-interval" type="number" min="1" max="120" value="15" onchange="saveNotifSettings()">
-        </div>
-        <button class="btn-notif-enable" id="notif-enable-btn" onclick="requestNotifPermission()">
-          <span data-en="Enable Notifications" data-kn="ಅಧಿಸೂಚನೆ ಚಾಲನೆ ಮಾಡಿ">Enable Notifications</span>
-        </button>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Allow installs from unknown sources.</strong> On your Android phone, go to
+        <em>Settings → Apps → Special access → Install unknown apps</em>, then enable it for your
+        file manager or browser (whichever you'll use to open the APK).
       </div>
-
-      <!-- Japa Settings -->
-      <div class="settings-section-label" data-en="YOUR JAPAS" data-kn="ನಿಮ್ಮ ಜಪಗಳು">YOUR JAPAS</div>
-      <div id="settings-list"></div>
-
-      <div class="add-japa-card" id="add-japa-section">
-        <div class="add-japa-title">➕ <span data-en="Add New Japa" data-kn="ಹೊಸ ಜಪ ಸೇರಿಸಿ">Add New Japa</span></div>
-        <div class="setting-row">
-          <span class="setting-label" data-en="Name (EN)" data-kn="ಹೆಸರು (EN)">Name (EN)</span>
-          <input class="setting-input" id="new-name-en" placeholder="e.g. Rama Japa" type="text">
-        </div>
-        <div class="setting-row">
-          <span class="setting-label" data-en="Name (ಕನ್ನಡ)" data-kn="ಹೆಸರು (ಕನ್ನಡ)">Name (ಕನ್ನಡ)</span>
-          <input class="setting-input setting-input-kannada" id="new-name-kn" placeholder="ಉದಾ. ರಾಮ ಜಪ" type="text">
-        </div>
-        <div class="setting-row">
-          <span class="setting-label" data-en="Seconds/chant" data-kn="ಸೆಕೆಂಡ್/ಜಪ">Seconds/chant</span>
-          <input class="setting-input" id="new-secs" placeholder="e.g. 2.5" type="number" step="0.1" min="0.1">
-        </div>
-        <div class="setting-row">
-          <span class="setting-label" data-en="Daily Target" data-kn="ದಿನದ ಗುರಿ">Daily Target</span>
-          <input class="setting-input" id="new-target" placeholder="e.g. 108 (optional)" type="number" min="0">
-        </div>
-        <button class="btn-add-japa" onclick="addJapa()">
-          <span data-en="Add Japa" data-kn="ಜಪ ಸೇರಿಸಿ">Add Japa</span>
-        </button>
-      </div>
-      <div class="max-note" id="max-note" style="display:none;" data-en="Maximum 5 japas reached." data-kn="ಗರಿಷ್ಠ 5 ಜಪಗಳು ಸೇರಿಸಲಾಗಿದೆ.">Maximum 5 japas reached.</div>
     </div>
-  </div>
-</div>
 
-<div class="mala-alert" id="mala-alert">
-  <div class="mala-alert-icon">🎉</div>
-  <div class="mala-alert-text" id="mala-alert-text">1 Mala Complete!</div>
-  <div class="mala-alert-sub" id="mala-alert-sub">108 chants done. Blessed!</div>
-  <button class="mala-alert-btn" onclick="closeMalaAlert()">🙏 <span data-en="Continue" data-kn="ಮುಂದುವರಿಸಿ">Continue</span></button>
-</div>
-<div class="toast" id="toast"></div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Copy the APK to your phone.</strong> Transfer
+        <code>shivapriya-japa.apk</code> to your phone via USB cable, email, Google Drive, or
+        WhatsApp.
+      </div>
+    </div>
 
-<script>
-// ── Language ──────────────────────────────────────────────
-var lang = localStorage.getItem('japa_lang') || 'en';
-var DOT_COLORS = ['#f5c842','#a78bfa','#4ade80','#fb923c','#e879f9'];
-var MALA = 108;
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Open the APK.</strong> Tap the file on your phone and follow the prompts to install.
+        If you're updating from an older version, uninstall the old one first so the new icon
+        and audio settings refresh cleanly.
+      </div>
+    </div>
 
-var T = {
-  en: {
-    appTitle:'Japa Timer', subtitle:'Om Tat Sat', splashSub:'Om Tat Sat',
-    timerTab:'Timers', historyTab:'Daily Log', settingsTab:'Settings',
-    langBtn:'ಕನ್ನಡ',
-    count:'Count', chants:'chants', malas:'Malas (108)', malaOf:'mala',
-    target:'Target', done:'Done', pending:'Pending', noTarget:'No target',
-    start:'▶  Start', pause:'⏸  Pause', resume:'▶  Resume', reset:'↺  Reset',
-    saveBtn:'🙏  Save Today\'s Japa', saveNote:'Save all timers to today\'s log',
-    malaComplete:'Mala Complete!', blessed:'chants completed. Blessed!',
-    continueBtn:'Continue', saved:'Saved! 🙏 Jai Mahadeva', noTime:'No time recorded yet!',
-    historyTitle:'Daily Log', noHistory:'No sessions saved yet.\nComplete japa and tap Save.',
-    totalSession:'Total session', clearHistory:'Clear all history',
-    settingsTitle:'Settings', yourJapas:'YOUR JAPAS',
-    nameEn:'Name (EN)', nameKn:'Name (ಕನ್ನಡ)', secsChant:'Secs/chant',
-    dailyTarget:'Daily Target', optional:'optional',
-    update:'✓ Update', delete:'Delete', addNew:'Add New Japa', addBtn:'Add Japa',
-    maxNote:'Maximum 5 japas reached.',
-    notifTitle:'Reminder Notifications', permission:'Permission',
-    enableReminders:'Enable reminders', everyMins:'Every (mins)',
-    enableNotifBtn:'Enable Notifications',
-    notifGranted:'Granted ✓', notifDenied:'Denied ✗', notifDefault:'Not set',
-    reminderBody:'done, pending left.',
-    targetComplete:'🎯 Daily target complete!',
-    secsPerChant:'s per chant'
-  },
-  kn: {
-    appTitle:'ಜಪ ಟೈಮರ್', subtitle:'ಓಂ ತತ್ ಸತ್', splashSub:'ಓಂ ತತ್ ಸತ್',
-    timerTab:'ಟೈಮರ್', historyTab:'ದಿನದ ದಾಖಲೆ', settingsTab:'ಸೆಟ್ಟಿಂಗ್ಸ್',
-    langBtn:'English',
-    count:'ಎಣಿಕೆ', chants:'ಜಪಗಳು', malas:'ಮಾಲೆಗಳು (೧೦೮)', malaOf:'ಮಾಲೆ',
-    target:'ಗುರಿ', done:'ಆಯಿತು', pending:'ಬಾಕಿ', noTarget:'ಗುರಿ ಇಲ್ಲ',
-    start:'▶  ಪ್ರಾರಂಭ', pause:'⏸  ನಿಲ್ಲಿಸಿ', resume:'▶  ಮುಂದುವರಿಸಿ', reset:'↺  ಮರುಹೊಂದಿಸಿ',
-    saveBtn:'🙏  ಇಂದಿನ ಜಪ ಉಳಿಸಿ', saveNote:'ಎಲ್ಲಾ ಟೈಮರ್‌ಗಳನ್ನು ಉಳಿಸಿ',
-    malaComplete:'ಮಾಲೆ ಪೂರ್ಣ!', blessed:'ಜಪಗಳು ಮುಗಿದಿದೆ. ಧನ್ಯ!',
-    continueBtn:'ಮುಂದುವರಿಸಿ', saved:'ಉಳಿಸಲಾಗಿದೆ! 🙏 ಜೈ ಮಹಾದೇವ', noTime:'ಸಮಯ ದಾಖಲಾಗಿಲ್ಲ!',
-    historyTitle:'ದಿನದ ದಾಖಲೆ', noHistory:'ಇನ್ನೂ ಯಾವ ಸೆಷನ್ ಇಲ್ಲ.\nಜಪ ಮಾಡಿ ಉಳಿಸಿ.',
-    totalSession:'ಒಟ್ಟು ಸಮಯ', clearHistory:'ಎಲ್ಲಾ ಅಳಿಸಿ',
-    settingsTitle:'ಸೆಟ್ಟಿಂಗ್ಸ್', yourJapas:'ನಿಮ್ಮ ಜಪಗಳು',
-    nameEn:'ಹೆಸರು (EN)', nameKn:'ಹೆಸರು (ಕನ್ನಡ)', secsChant:'ಸೆಕೆಂಡ್/ಜಪ',
-    dailyTarget:'ದಿನದ ಗುರಿ', optional:'ಐಚ್ಛಿಕ',
-    update:'✓ ಅಪ್‌ಡೇಟ್', delete:'ಅಳಿಸಿ', addNew:'ಹೊಸ ಜಪ ಸೇರಿಸಿ', addBtn:'ಜಪ ಸೇರಿಸಿ',
-    maxNote:'ಗರಿಷ್ಠ 5 ಜಪಗಳು ಸೇರಿಸಲಾಗಿದೆ.',
-    notifTitle:'ಜ್ಞಾಪನೆ ಅಧಿಸೂಚನೆ', permission:'ಅನುಮತಿ',
-    enableReminders:'ಜ್ಞಾಪನೆ ಚಾಲನೆ', everyMins:'ಪ್ರತಿ (ನಿಮಿ)',
-    enableNotifBtn:'ಅಧಿಸೂಚನೆ ಚಾಲನೆ ಮಾಡಿ',
-    notifGranted:'ಅನುಮತಿ ✓', notifDenied:'ನಿರಾಕರಿಸಲಾಗಿದೆ ✗', notifDefault:'ಹೊಂದಿಸಿಲ್ಲ',
-    reminderBody:'ಆಯಿತು, ಬಾಕಿ ಇದೆ.',
-    targetComplete:'🎯 ದಿನದ ಗುರಿ ತಲುಪಿದೆ!',
-    secsPerChant:'ಸೆಕೆ/ಜಪ'
-  }
-};
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Launch.</strong> Look for the 🪔 icon in your app drawer.
+      </div>
+    </div>
 
-function t(key) { return (T[lang] && T[lang][key]) || T.en[key] || key; }
+    <div class="note">
+      <strong>Permissions:</strong> The app does not need internet, location, contacts, or
+      microphone access. It runs entirely on your phone.
+    </div>
+  </section>
 
-function toggleLang() {
-  lang = lang === 'en' ? 'kn' : 'en';
-  localStorage.setItem('japa_lang', lang);
-  applyLang();
-  renderTimers();
-  renderSettings();
-  updateNotifStatusUI();
-}
+  <section id="features">
+    <h2>✨ What It Does</h2>
+    <p>
+      Japa Timer helps you keep a steady, hands-free count for any number of japa, nama, or
+      mantra recitations. Each japa has its own time setting, optional chant audio, and running
+      count.
+    </p>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="feature-icon">⏱️</div>
+        <div class="feature-title">Custom timer per japa</div>
+        <div class="feature-desc">Set the seconds for one cycle and the timer counts up cleanly.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔢</div>
+        <div class="feature-title">Auto count</div>
+        <div class="feature-desc">Each cycle increments your count automatically.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔊</div>
+        <div class="feature-title">Audio per japa</div>
+        <div class="feature-desc">Upload an MP3 or WAV file of the nama/mantra; it plays each cycle.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎚️</div>
+        <div class="feature-title">Speed &amp; mute</div>
+        <div class="feature-desc">Play audio at 0.75× to 2× (including 1.2×), or mute it any time.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-title">English &amp; Kannada</div>
+        <div class="feature-desc">Switch language with one tap.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📜</div>
+        <div class="feature-title">History</div>
+        <div class="feature-desc">See your past sessions and total counts.</div>
+      </div>
+    </div>
+  </section>
 
-function applyLang() {
-  document.getElementById('hdr-title').textContent = t('appTitle');
-  document.getElementById('hdr-subtitle').textContent = t('subtitle');
-  document.getElementById('lang-btn').textContent = t('langBtn');
-  document.getElementById('today-date').textContent = new Date().toLocaleDateString(lang==='kn'?'kn-IN':'en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  // Update all data-en/data-kn spans
-  document.querySelectorAll('[data-en]').forEach(function(el) {
-    el.textContent = lang==='kn' ? (el.getAttribute('data-kn')||el.getAttribute('data-en')) : el.getAttribute('data-en');
-  });
-}
+  <section id="firstuse">
+    <h2>🚀 First-Time Setup</h2>
+    <p>The app comes preloaded with common japas (Gayathri, Shiva, etc.). You can use them as-is
+       or customize them. To add your own:</p>
 
-// ── Default Japas ─────────────────────────────────────────
-var DEFAULT_JAPAS = [
-  { nameEn:'Gayathri Japa', nameKn:'ಗಾಯತ್ರಿ ಜಪ', secs:5.5, target:0 },
-  { nameEn:'Om Namah Shivaya', nameKn:'ಓಂ ನಮಃ ಶಿವಾಯ', secs:1.2, target:0 }
-];
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">Open <strong>Settings</strong> (⚙️ icon, top-right).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">Tap <strong>+ Add Japa</strong>.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">Enter the name in English and Kannada, set the time per cycle, and
+         (optionally) attach an audio file.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">Tap <strong>Save</strong>. The new japa will appear on the main screen.</div>
+    </div>
+  </section>
 
-var japas = [], timers = [];
+  <section id="daily">
+    <h2>📿 Daily Use</h2>
 
-// ── Persistence ───────────────────────────────────────────
-function loadJapas() {
-  try { var s=JSON.parse(localStorage.getItem('japa_config')); if(s&&s.length) return s; } catch(e){}
-  return DEFAULT_JAPAS.map(function(j){return Object.assign({},j);});
-}
-function saveJapas(){ localStorage.setItem('japa_config',JSON.stringify(japas)); }
+    <h3>Starting a session</h3>
+    <ul>
+      <li>Tap any japa card to start its timer.</li>
+      <li>If audio is set, it plays automatically each cycle.</li>
+      <li>Tap again to pause.</li>
+    </ul>
 
-function loadTimerState() {
-  try {
-    var s=JSON.parse(localStorage.getItem('japa_timer_state'));
-    if(s&&s.date===getTodayKey()&&s.timers) return s.timers;
-  } catch(e){}
-  return null;
-}
-function saveTimerState() {
-  localStorage.setItem('japa_timer_state',JSON.stringify({
-    date:getTodayKey(),
-    timers:timers.map(function(t){return{elapsed:t.elapsed,lastMala:t.lastMala};})
-  }));
-}
+    <h3>Resetting the count</h3>
+    <ul>
+      <li>Long-press the count, or use the reset button.</li>
+      <li>If you have a count in progress, the app asks for confirmation before clearing — so you
+          don't lose progress by mistake.</li>
+    </ul>
 
-function loadNotifSettings() {
-  try { return JSON.parse(localStorage.getItem('japa_notif')||'{}'); } catch(e){return{};}
-}
-function saveNotifSettings() {
-  var s = {
-    enabled: document.getElementById('notif-enabled').checked,
-    interval: parseInt(document.getElementById('notif-interval').value)||15
-  };
-  localStorage.setItem('japa_notif', JSON.stringify(s));
-  rescheduleNotifications();
-}
+    <h3>Setting a target</h3>
+    <p>You can set a target count (e.g., 108) for a japa. The app shows progress and notifies
+       when you reach it.</p>
+  </section>
 
-setInterval(saveTimerState, 5000);
-document.addEventListener('visibilitychange', function(){ if(document.hidden) saveTimerState(); });
-window.addEventListener('pagehide', saveTimerState);
-window.addEventListener('beforeunload', saveTimerState);
+  <section id="audio">
+    <h2>🎵 Adding Audio (Nama / Mantra)</h2>
+    <p>Each japa can have its own chant audio that plays once per cycle.</p>
 
-// ── Notifications ─────────────────────────────────────────
-var notifInterval = null;
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">Open Settings → tap the japa you want to edit.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">Tap <strong>Choose Audio</strong> and pick an MP3 or WAV from your phone.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">The duration is detected automatically. Set the cycle time to match
+         (or longer than) the audio length.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">Use <strong>Speed</strong> to play it faster (1.2×, 1.5×) or slower
+         (0.75×). Use <strong>Mute</strong> to silence it without removing it.</div>
+    </div>
 
-function requestNotifPermission() {
-  if (!('Notification' in window)) { showToast('Notifications not supported'); return; }
-  Notification.requestPermission().then(function(p) {
-    updateNotifStatusUI();
-    if (p==='granted') { showToast(t('notifGranted')); rescheduleNotifications(); }
-    else { showToast(t('notifDenied')); }
-  });
-}
+    <div class="note">
+      <strong>Tip:</strong> Keep audio files short (under 30 seconds) and small (under 1 MB) for
+      best performance. Very large files take longer to load.
+    </div>
+  </section>
 
-function updateNotifStatusUI() {
-  var badge = document.getElementById('notif-status-badge');
-  var btn = document.getElementById('notif-enable-btn');
-  if (!('Notification' in window)) {
-    badge.textContent='Not supported'; badge.className='notif-status denied';
-    btn.style.display='none'; return;
-  }
-  var p = Notification.permission;
-  if (p==='granted') {
-    badge.textContent=t('notifGranted'); badge.className='notif-status granted'; btn.style.display='none';
-  } else if (p==='denied') {
-    badge.textContent=t('notifDenied'); badge.className='notif-status denied'; btn.style.display='none';
-  } else {
-    badge.textContent=t('notifDefault'); badge.className='notif-status default'; btn.style.display='block';
-  }
-}
+  <section id="settings">
+    <h2>⚙️ Settings Explained</h2>
+    <table>
+      <tr><th>Setting</th><th>What it does</th></tr>
+      <tr><td>Time per cycle</td><td>How many seconds one count takes.</td></tr>
+      <tr><td>Audio file</td><td>Optional chant that plays each cycle.</td></tr>
+      <tr><td>Audio mute</td><td>Silences the audio without deleting the file.</td></tr>
+      <tr><td>Audio speed</td><td>Plays the audio faster or slower (0.75× to 2×).</td></tr>
+      <tr><td>Keep screen on <span class="badge badge-new">New</span></td><td>When enabled, the phone won't dim or sleep while Japa Timer is open. Toggle it from <em>Settings → Display</em>.</td></tr>
+      <tr><td>Target count</td><td>Optional goal (e.g., 108) for the session.</td></tr>
+      <tr><td>Max note</td><td>A reminder you'd like to see during the session.</td></tr>
+      <tr><td>Language</td><td>Switch the entire UI between English and Kannada.</td></tr>
+    </table>
+  </section>
 
-function rescheduleNotifications() {
-  if (notifInterval) { clearInterval(notifInterval); notifInterval=null; }
-  var s = loadNotifSettings();
-  if (!s.enabled || Notification.permission!=='granted') return;
-  var ms = (s.interval||15) * 60 * 1000;
-  notifInterval = setInterval(sendReminderNotif, ms);
-}
+  <section id="display">
+    <h2>🌙 Keeping the Screen On</h2>
+    <p>
+      During longer japa sessions you don't want the phone screen to dim or lock. The app has a
+      built-in toggle for this so you don't have to change phone-wide settings.
+    </p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">Open <strong>Settings</strong> (⚙️ tab at the bottom).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">Find the <strong>🌙 Display</strong> card near the top.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">Turn on <strong>Keep screen on while app is running</strong>.</div>
+    </div>
+    <div class="note">
+      <strong>How it works:</strong> The screen stays on only while Japa Timer is open and
+      visible. When you switch to another app or lock the phone, normal screen behavior resumes —
+      so it won't drain battery in the background. The setting is remembered across launches.
+    </div>
+  </section>
 
-function sendReminderNotif() {
-  if (Notification.permission!=='granted') return;
-  japas.forEach(function(j,i) {
-    var count = getCount(i);
-    var target = j.target||0;
-    var name = lang==='kn' ? j.nameKn : j.nameEn;
-    if (target > 0) {
-      var pending = Math.max(0, target - count);
-      var pct = Math.min(100, Math.round(count/target*100));
-      if (count >= target) {
-        new Notification('🎯 '+name, { body: t('targetComplete')+' ('+count+'/'+target+')', icon:'icons/icon-192.png' });
-      } else {
-        new Notification('🪔 '+name, { body: count+' '+t('done')+', '+pending+' '+t('pending')+' ('+pct+'%)', icon:'icons/icon-192.png' });
-      }
-    } else if (count > 0) {
-      new Notification('🪔 '+name, { body: count+' '+t('chants')+' '+t('done'), icon:'icons/icon-192.png' });
-    }
-  });
-}
+  <section id="troubleshoot">
+    <h2>🛠️ Troubleshooting</h2>
 
-// ── Init ─────────────────────────────────────────────────
-function init() {
-  japas = loadJapas();
-  var saved = loadTimerState();
-  timers = japas.map(function(j,i){
-    var s=saved&&saved[i];
-    return{elapsed:s?(s.elapsed||0):0,lastMala:s?(s.lastMala||0):0,running:false,interval:null};
-  });
+    <h3>The audio cuts off too early</h3>
+    <p>Make sure the cycle time is at least as long as the audio length. If the audio is 6 seconds
+       and you set the cycle to 3 seconds, the timer will start the next cycle before the audio
+       finishes.</p>
 
-  // Load notif settings
-  var ns = loadNotifSettings();
-  document.getElementById('notif-enabled').checked = ns.enabled||false;
-  document.getElementById('notif-interval').value = ns.interval||15;
+    <h3>Audio pauses when I switch apps</h3>
+    <p>Android pauses media when the app loses focus. Keep Japa Timer in the foreground for the
+       audio to keep playing. (A future update may add background-audio support.)</p>
 
-  applyLang();
-  renderTimers();
-  renderSettings();
-  updateNotifStatusUI();
-  rescheduleNotifications();
+    <h3>Count didn't save after I closed the app</h3>
+    <p>Counts save automatically as you go. If you reset and confirmed the dialog, the count was
+       cleared — there's no way to recover a confirmed reset.</p>
 
-  setTimeout(function(){
-    document.getElementById('splash').classList.add('hide');
-    setTimeout(function(){document.getElementById('splash').style.display='none';},700);
-  },1500);
-}
+    <h3>App icon looks wrong after update</h3>
+    <p>Uninstall the old version completely, then install the new APK. Android sometimes caches
+       the old icon during in-place updates.</p>
 
-// ── Helpers ───────────────────────────────────────────────
-function pad(n){return String(Math.floor(n)).padStart(2,'0');}
-function fmtTime(ms){var s=Math.floor(ms/1000);return pad(s/3600)+':'+pad((s%3600)/60)+':'+pad(s%60);}
-function fmtShort(ms){var s=Math.floor(ms/1000),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;if(h>0)return h+'h '+m+'m '+sec+'s';if(m>0)return m+'m '+sec+'s';return sec+'s';}
-function getCount(i){return Math.floor(timers[i].elapsed/1000/japas[i].secs);}
-function getMala(i){return Math.floor(getCount(i)/MALA);}
-function getTodayKey(){return new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
-function getName(j){return lang==='kn'?(j.nameKn||j.nameEn):j.nameEn;}
+    <h3>Audio plays only after closing &amp; reopening the app</h3>
+    <p>This happens occasionally with very large audio files on first run. Pick a smaller file
+       (under 1 MB) or compress your existing one with a free MP3 compressor.</p>
+  </section>
 
-// ── Render Timers ─────────────────────────────────────────
-function renderTimers() {
-  var html='';
-  japas.forEach(function(j,i){
-    var c=i%5;
-    var count=getCount(i), mala=getMala(i);
-    var target=j.target||0;
-    var pct=target>0?Math.min(100,Math.round(count/target*100)):0;
-    var pending=target>0?Math.max(0,target-count):0;
-    var name=getName(j);
-    var isRunning=timers[i]&&timers[i].running;
-    var btnText=isRunning?t('pause'):( (timers[i]&&timers[i].elapsed>0)?t('resume'):t('start') );
+  <section id="about">
+    <h2>🙏 About</h2>
+    <div class="contact">
+      <div class="contact-name">Developed by Shivapriya Nanda</div>
+      <div class="contact-row">📧 <a href="mailto:ganeshasri@gmail.com">ganeshasri@gmail.com</a></div>
+      <div class="contact-row">📞 <a href="tel:+919980549454">+91 99805 49454</a></div>
+    </div>
+    <p style="text-align:center; margin-top:14px; font-size:14px; color:var(--muted);">
+      Built with care for daily sadhana. Suggestions and feedback are always welcome.
+    </p>
+  </section>
 
-    // Progress bar section (only if target set)
-    var progressHtml='';
-    if (target>0) {
-      var pctColor = pct>=100?'#4ade80':(pct>=50?'#f5d87a':'#a78bfa');
-      progressHtml='<div class="progress-section">'+
-        '<div class="progress-header">'+
-          '<span class="progress-label">'+t('target')+': '+target+'</span>'+
-          '<span class="progress-pct" style="color:'+pctColor+'">'+pct+'%</span>'+
-        '</div>'+
-        '<div class="progress-bar-bg"><div class="progress-bar-fill fill-'+c+'" id="pbar'+i+'" style="width:'+pct+'%"></div></div>'+
-        '<div class="progress-counts">'+t('done')+': '+count+' &nbsp;|&nbsp; '+t('pending')+': '+pending+'</div>'+
-      '</div>';
-    }
+</main>
 
-    html+='<div class="timer-card card-'+c+'">'+
-      '<div class="timer-header"><div>'+
-        '<div class="timer-label lc'+c+'">'+name+'</div>'+
-        '<div class="timer-label-sub">'+j.secs+' '+t('secsPerChant')+'</div>'+
-      '</div><span class="running-dot'+(isRunning?' active':'')+'" id="dot'+i+'"></span></div>'+
-      '<div class="timer-count-row">'+
-        '<div class="timer-display" id="display'+i+'">'+fmtTime(timers[i].elapsed)+'</div>'+
-        '<div class="count-box">'+
-          '<div class="count-label">'+t('count')+'</div>'+
-          '<div class="count-value cc'+c+'" id="count'+i+'">'+count+'</div>'+
-          '<div class="count-sub">'+t('chants')+'</div>'+
-        '</div>'+
-      '</div>'+
-      progressHtml+
-      '<div class="mala-row"><span class="mala-label">🧿 '+t('malas')+'</span>'+
-        '<span class="mala-value lc'+c+'" id="mala'+i+'">'+mala+'</span></div>'+
-      '<div class="timer-controls">'+
-        '<button class="btn btn-start sc'+c+(isRunning?' running':'')+'" id="btn'+i+'" onclick="toggle('+i+')">'+btnText+'</button>'+
-        '<button class="btn btn-reset" onclick="resetTimer('+i+')">'+t('reset')+'</button>'+
-      '</div></div>';
-  });
+<footer>
+  🪔 ಶ್ರೀ ಗುರುಭ್ಯೋ ನಮಃ &nbsp;&middot;&nbsp; Japa Timer &nbsp;&middot;&nbsp; v2
+</footer>
 
-  html+='<div class="save-section"><div class="save-note">'+t('saveNote')+'</div>'+
-    '<button class="btn-save-all" onclick="saveToday()">'+t('saveBtn')+'</button></div>';
-  document.getElementById('timers-view').innerHTML=html;
-}
-
-// ── Timer Logic ───────────────────────────────────────────
-function updateDisplay(i) {
-  var count=getCount(i), mala=getMala(i);
-  document.getElementById('display'+i).textContent=fmtTime(timers[i].elapsed);
-  document.getElementById('count'+i).textContent=count;
-  document.getElementById('mala'+i).textContent=mala;
-
-  // Update progress bar
-  var target=japas[i].target||0;
-  var pbar=document.getElementById('pbar'+i);
-  if (pbar&&target>0) {
-    var pct=Math.min(100,Math.round(count/target*100));
-    pbar.style.width=pct+'%';
-    // Update pending text
-    var pc=pbar.parentElement.nextElementSibling;
-    if(pc) pc.textContent=t('done')+': '+count+' | '+t('pending')+': '+Math.max(0,target-count);
-    // Update pct label
-    var ph=pbar.parentElement.previousElementSibling;
-    if(ph&&ph.children[1]){
-      var color=pct>=100?'#4ade80':(pct>=50?'#f5d87a':'#a78bfa');
-      ph.children[1].textContent=pct+'%';
-      ph.children[1].style.color=color;
-    }
-    // Target complete alert
-    if (count>=target && count-1<target) {
-      showToast(getName(japas[i])+' — '+t('targetComplete'));
-      vibrate();
-    }
-  }
-
-  // Mala alert
-  if(mala>timers[i].lastMala){
-    timers[i].lastMala=mala;
-    showMalaAlert(mala,getName(japas[i]));
-    vibrate();
-  }
-}
-
-function toggle(i) {
-  var t2=timers[i],btn=document.getElementById('btn'+i),dot=document.getElementById('dot'+i);
-  if(t2.running){
-    clearInterval(t2.interval);t2.running=false;
-    btn.textContent=t('resume'); btn.classList.remove('running'); dot.classList.remove('active');
-    saveTimerState();
-  } else {
-    var base=t2.elapsed,start=Date.now();
-    t2.interval=setInterval(function(){t2.elapsed=base+(Date.now()-start);updateDisplay(i);},200);
-    t2.running=true; btn.textContent=t('pause'); btn.classList.add('running'); dot.classList.add('active');
-  }
-}
-
-function resetTimer(i) {
-  var t2=timers[i];
-  if(t2.running){clearInterval(t2.interval);t2.running=false;document.getElementById('dot'+i).classList.remove('active');}
-  t2.elapsed=0;t2.lastMala=0;
-  document.getElementById('btn'+i).textContent=t('start');
-  document.getElementById('btn'+i).classList.remove('running');
-  updateDisplay(i); saveTimerState();
-}
-
-function vibrate(){if(navigator.vibrate)navigator.vibrate([200,100,200,100,400]);}
-function showMalaAlert(mala,name){
-  document.getElementById('mala-alert-text').textContent=mala+' '+t('malaComplete');
-  document.getElementById('mala-alert-sub').textContent=(mala*MALA)+' '+name+' '+t('blessed');
-  var el=document.getElementById('mala-alert');el.classList.add('show');
-  setTimeout(function(){el.classList.remove('show');},4500);
-}
-function closeMalaAlert(){document.getElementById('mala-alert').classList.remove('show');}
-
-// ── Save / History ────────────────────────────────────────
-function saveToday() {
-  if(!timers.some(function(t2){return t2.elapsed>0;})){showToast(t('noTime'));return;}
-  var history=getHistory(),today=getTodayKey();
-  history[today]={savedAt:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
-    japas:japas.map(function(j,i){return{nameEn:j.nameEn,nameKn:j.nameKn,elapsed:timers[i].elapsed,count:getCount(i),mala:getMala(i),target:j.target||0};})};
-  saveHistory(history); showToast(t('saved')); vibrate();
-}
-function getHistory(){try{return JSON.parse(localStorage.getItem('japa_history')||'{}');}catch(e){return{};}}
-function saveHistory(h){try{localStorage.setItem('japa_history',JSON.stringify(h));}catch(e){}}
-
-function renderHistory() {
-  var history=getHistory(),keys=Object.keys(history).reverse(),list=document.getElementById('history-list');
-  if(!keys.length){list.innerHTML='<div class="history-empty">'+t('noHistory').replace('\n','<br>')+'</div>';return;}
-  var html=keys.map(function(k){
-    var d=history[k],total=0,rows='';
-    var jd=d.japas||[];
-    jd.forEach(function(j,i){
-      total+=j.elapsed||0;
-      var name=lang==='kn'?(j.nameKn||j.nameEn):j.nameEn;
-      var targetStr=j.target>0?' | '+t('target')+': '+j.target:'';
-      rows+='<div class="entry-row"><span class="entry-name"><span class="dot" style="background:'+DOT_COLORS[i%5]+'"></span>'+name+'</span>'+
-        '<div class="entry-right"><span class="entry-time">'+fmtShort(j.elapsed||0)+'</span>'+
-        '<span class="entry-count">'+(j.count||0)+' '+t('chants')+' · '+(j.mala||0)+' '+t('malaOf')+targetStr+'</span></div></div>';
-    });
-    return '<div class="history-entry"><div class="entry-date">'+k+(d.savedAt?' · '+d.savedAt:'')+'</div>'+rows+
-      '<div class="entry-total"><span>'+t('totalSession')+'</span><span>'+fmtShort(total)+'</span></div></div>';
-  }).join('');
-  html+='<button class="btn-clear" onclick="clearHistory()">'+t('clearHistory')+'</button>';
-  list.innerHTML=html;
-}
-function clearHistory(){if(confirm(t('clearHistory')+'?')){localStorage.removeItem('japa_history');renderHistory();}}
-
-// ── Settings ──────────────────────────────────────────────
-function renderSettings() {
-  var html='';
-  japas.forEach(function(j,i){
-    var c=i%5;
-    html+='<div class="setting-card">'+
-      '<div class="setting-card-title"><span class="lc'+c+'">'+getName(j)+'</span>'+
-        (japas.length>1?'<button class="btn-delete" onclick="deleteJapa('+i+')">'+t('delete')+'</button>':'')+
-      '</div>'+
-      '<div class="setting-row"><span class="setting-label">'+t('nameEn')+'</span><input class="setting-input" id="sname-en'+i+'" value="'+j.nameEn+'" type="text"></div>'+
-      '<div class="setting-row"><span class="setting-label">'+t('nameKn')+'</span><input class="setting-input setting-input-kannada" id="sname-kn'+i+'" value="'+(j.nameKn||'')+'" type="text" placeholder="ಕನ್ನಡ ಹೆಸರು"></div>'+
-      '<div class="setting-row"><span class="setting-label">'+t('secsChant')+'</span><input class="setting-input" id="ssecs'+i+'" value="'+j.secs+'" type="number" step="0.1" min="0.1"></div>'+
-      '<div class="setting-row"><span class="setting-label">'+t('dailyTarget')+'</span><input class="setting-input" id="starget'+i+'" value="'+(j.target||'')+'" type="number" min="0" placeholder="'+t('optional')+'"></div>'+
-      '<button class="btn-update" onclick="updateJapa('+i+')">'+t('update')+'</button>'+
-    '</div>';
-  });
-  document.getElementById('settings-list').innerHTML=html;
-  var atMax=japas.length>=5;
-  document.getElementById('add-japa-section').style.display=atMax?'none':'block';
-  document.getElementById('max-note').style.display=atMax?'block':'none';
-  document.getElementById('max-note').textContent=t('maxNote');
-}
-
-function updateJapa(i) {
-  var nameEn=document.getElementById('sname-en'+i).value.trim();
-  var nameKn=document.getElementById('sname-kn'+i).value.trim();
-  var secs=parseFloat(document.getElementById('ssecs'+i).value);
-  var target=parseInt(document.getElementById('starget'+i).value)||0;
-  if(!nameEn){showToast('Please enter name');return;}
-  if(!secs||secs<=0){showToast('Please enter valid seconds');return;}
-  japas[i].nameEn=nameEn; japas[i].nameKn=nameKn||nameEn;
-  japas[i].secs=secs; japas[i].target=target;
-  saveJapas(); renderTimers(); renderSettings(); showToast(t('saved').split('!')[0]+'!');
-}
-
-function deleteJapa(i) {
-  if(japas.length<=1){showToast('At least 1 japa required');return;}
-  if(!confirm('Delete "'+japas[i].nameEn+'"?'))return;
-  japas.splice(i,1); timers.splice(i,1);
-  saveJapas(); saveTimerState(); renderTimers(); renderSettings();
-}
-
-function addJapa() {
-  if(japas.length>=5){showToast(t('maxNote'));return;}
-  var nameEn=document.getElementById('new-name-en').value.trim();
-  var nameKn=document.getElementById('new-name-kn').value.trim();
-  var secs=parseFloat(document.getElementById('new-secs').value);
-  var target=parseInt(document.getElementById('new-target').value)||0;
-  if(!nameEn){showToast('Please enter name');return;}
-  if(!secs||secs<=0){showToast('Please enter valid seconds');return;}
-  japas.push({nameEn:nameEn,nameKn:nameKn||nameEn,secs:secs,target:target});
-  timers.push({elapsed:0,running:false,interval:null,lastMala:0});
-  saveJapas();
-  document.getElementById('new-name-en').value='';
-  document.getElementById('new-name-kn').value='';
-  document.getElementById('new-secs').value='';
-  document.getElementById('new-target').value='';
-  renderTimers(); renderSettings(); showToast(nameEn+' added! 🙏');
-}
-
-// ── UI ────────────────────────────────────────────────────
-function showToast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(function(){el.classList.remove('show');},2800);}
-
-function switchTab(tab){
-  ['timers','history','settings'].forEach(function(id){
-    document.getElementById('tab-'+id).classList.toggle('active',id===tab);
-    document.getElementById(id+'-view').style.display=id===tab?'block':'none';
-  });
-  if(tab==='history')renderHistory();
-  if(tab==='settings'){renderSettings();updateNotifStatusUI();}
-}
-
-if('serviceWorker' in navigator){
-  window.addEventListener('load',function(){
-    navigator.serviceWorker.register('/japa-timer/sw.js').catch(function(){
-      navigator.serviceWorker.register('sw.js').catch(function(){});
-    });
-  });
-}
-
-init();
-</script>
 </body>
 </html>
