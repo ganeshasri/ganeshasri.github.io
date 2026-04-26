@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Japa Timer — User Guide</title>
+<style>
+  :root {
+    --saffron: #FF6B35;
+    --deep: #333B14;
+    --cream: #FFF8EE;
+    --ink: #2C1810;
+    --muted: #6B5B4A;
+    --line: #E8DCC4;
+    --accent: #B8860B;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  header {
+    background: linear-gradient(135deg, var(--deep) 0%, #4a5320 100%);
+    color: var(--cream);
+    padding: 40px 24px;
+    text-align: center;
+    border-bottom: 4px solid var(--saffron);
+  }
+  header .lamp { font-size: 56px; line-height: 1; }
+  header h1 { margin: 8px 0 4px; font-size: 32px; letter-spacing: 0.5px; }
+  header .subtitle { opacity: 0.85; font-size: 15px; }
+  main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  section {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(51,59,20,0.06);
+  }
+  h2 {
+    margin: 0 0 14px;
+    color: var(--deep);
+    font-size: 22px;
+    border-bottom: 2px solid var(--saffron);
+    padding-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h3 {
+    color: var(--deep);
+    font-size: 17px;
+    margin: 18px 0 8px;
+  }
+  p { margin: 8px 0; }
+  ul { padding-left: 22px; margin: 8px 0; }
+  li { margin: 6px 0; }
+  code {
+    background: #f3ecd8;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", Monaco, Consolas, monospace;
+    font-size: 13px;
+    color: var(--deep);
+  }
+  pre {
+    background: var(--deep);
+    color: #f0e6c8;
+    padding: 14px 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  pre code { background: transparent; color: inherit; padding: 0; }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+  }
+  .feature {
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .feature-icon { font-size: 26px; margin-bottom: 6px; }
+  .feature-title {
+    font-weight: 600;
+    color: var(--deep);
+    margin-bottom: 4px;
+  }
+  .feature-desc {
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin: 14px 0;
+    padding: 12px;
+    background: var(--cream);
+    border-radius: 8px;
+    border-left: 3px solid var(--saffron);
+  }
+  .step-num {
+    background: var(--saffron);
+    color: white;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+  .step-body { flex: 1; }
+  .step-body strong { color: var(--deep); }
+  .note {
+    background: #fff3d6;
+    border-left: 4px solid var(--accent);
+    padding: 12px 14px;
+    border-radius: 6px;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  .note strong { color: var(--deep); }
+  .warning {
+    background: #ffe9e0;
+    border-left: 4px solid var(--saffron);
+    padding: 12px 14px;
+    border-radius: 6px;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  th {
+    background: var(--cream);
+    color: var(--deep);
+    font-weight: 600;
+  }
+  tr:last-child td { border-bottom: none; }
+  .badge {
+    display: inline-block;
+    background: var(--saffron);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-new { background: #28a745; }
+  .badge-fix { background: #17a2b8; }
+  .download-hero {
+    text-align: center;
+    background: linear-gradient(135deg, #fff3d6 0%, #ffe9c8 100%);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .download-hero h2 {
+    border: none;
+    padding: 0;
+    margin: 0 0 6px;
+    font-size: 20px;
+    justify-content: center;
+  }
+  .download-hero p {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 14px;
+  }
+  .btn-download {
+    display: inline-block;
+    background: var(--saffron);
+    color: white;
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 12px rgba(255,107,53,0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-download:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(255,107,53,0.45);
+  }
+  .btn-download .icon { font-size: 18px; margin-right: 6px; }
+  .download-meta {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .download-meta code {
+    font-size: 12px;
+  }
+  footer {
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 14px;
+    border-top: 1px solid var(--line);
+    margin-top: 20px;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  .toc {
+    background: var(--cream);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+  .toc ol { margin: 4px 0; padding-left: 22px; }
+  .toc a { color: var(--deep); text-decoration: none; }
+  .toc a:hover { color: var(--saffron); }
+  .contact {
+    text-align: center;
+    background: linear-gradient(135deg, var(--cream) 0%, #fff3d6 100%);
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+  }
+  .contact-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--deep);
+    margin-bottom: 6px;
+  }
+  .contact-row { font-size: 14px; margin: 4px 0; }
+  .contact-row a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="lamp">🪔</div>
+  <h1>Japa Timer</h1>
+  <div class="subtitle">A simple companion for your daily japa &amp; meditation practice</div>
+</header>
+
+<main>
+
+  <section class="download-hero">
+    <h2>📥 Download the App</h2>
+    <p>Latest build of Japa Timer for Android phones &amp; tablets.</p>
+    <a class="btn-download" href="shivapriya-japa.apk" download>
+      <span class="icon">⬇️</span> Download APK
+    </a>
+    <div class="download-meta">
+      File: <code>shivapriya-japa.apk</code> · Android 7.0+ · See installation steps below
+    </div>
+  </section>
+
+  <section class="toc">
+    <h2 style="border:none; padding:0; margin:0 0 8px;">📖 Contents</h2>
+    <ol>
+      <li><a href="#install">Installing the app</a></li>
+      <li><a href="#features">What it does</a></li>
+      <li><a href="#firstuse">First-time setup</a></li>
+      <li><a href="#daily">Daily use</a></li>
+      <li><a href="#audio">Adding audio (nama / mantra)</a></li>
+      <li><a href="#settings">Settings explained</a></li>
+      <li><a href="#display">Keeping the screen on</a></li>
+      <li><a href="#troubleshoot">Troubleshooting</a></li>
+      <li><a href="#about">About / Contact</a></li>
+    </ol>
+  </section>
+
+  <section id="install">
+    <h2>📲 Installing the App</h2>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Allow installs from unknown sources.</strong> On your Android phone, go to
+        <em>Settings → Apps → Special access → Install unknown apps</em>, then enable it for your
+        file manager or browser (whichever you'll use to open the APK).
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Copy the APK to your phone.</strong> Transfer
+        <code>shivapriya-japa.apk</code> to your phone via USB cable, email, Google Drive, or
+        WhatsApp.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Open the APK.</strong> Tap the file on your phone and follow the prompts to install.
+        If you're updating from an older version, uninstall the old one first so the new icon
+        and audio settings refresh cleanly.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <strong>Launch.</strong> Look for the 🪔 icon in your app drawer.
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>Permissions:</strong> The app does not need internet, location, contacts, or
+      microphone access. It runs entirely on your phone.
+    </div>
+  </section>
+
+  <section id="features">
+    <h2>✨ What It Does</h2>
+    <p>
+      Japa Timer helps you keep a steady, hands-free count for any number of japa, nama, or
+      mantra recitations. Each japa has its own time setting, optional chant audio, and running
+      count.
+    </p>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="feature-icon">⏱️</div>
+        <div class="feature-title">Custom timer per japa</div>
+        <div class="feature-desc">Set the seconds for one cycle and the timer counts up cleanly.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔢</div>
+        <div class="feature-title">Auto count</div>
+        <div class="feature-desc">Each cycle increments your count automatically.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔊</div>
+        <div class="feature-title">Audio per japa</div>
+        <div class="feature-desc">Upload an MP3 or WAV file of the nama/mantra; it plays each cycle.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🎚️</div>
+        <div class="feature-title">Speed &amp; mute</div>
+        <div class="feature-desc">Play audio at 0.75× to 2× (including 1.2×), or mute it any time.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🌐</div>
+        <div class="feature-title">English &amp; Kannada</div>
+        <div class="feature-desc">Switch language with one tap.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">📜</div>
+        <div class="feature-title">History</div>
+        <div class="feature-desc">See your past sessions and total counts.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="firstuse">
+    <h2>🚀 First-Time Setup</h2>
+    <p>The app comes preloaded with common japas (Gayathri, Shiva, etc.). You can use them as-is
+       or customize them. To add your own:</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">Open <strong>Settings</strong> (⚙️ icon, top-right).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">Tap <strong>+ Add Japa</strong>.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">Enter the name in English and Kannada, set the time per cycle, and
+         (optionally) attach an audio file.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">Tap <strong>Save</strong>. The new japa will appear on the main screen.</div>
+    </div>
+  </section>
+
+  <section id="daily">
+    <h2>📿 Daily Use</h2>
+
+    <h3>Starting a session</h3>
+    <ul>
+      <li>Tap any japa card to start its timer.</li>
+      <li>If audio is set, it plays automatically each cycle.</li>
+      <li>Tap again to pause.</li>
+    </ul>
+
+    <h3>Resetting the count</h3>
+    <ul>
+      <li>Long-press the count, or use the reset button.</li>
+      <li>If you have a count in progress, the app asks for confirmation before clearing — so you
+          don't lose progress by mistake.</li>
+    </ul>
+
+    <h3>Setting a target</h3>
+    <p>You can set a target count (e.g., 108) for a japa. The app shows progress and notifies
+       when you reach it.</p>
+  </section>
+
+  <section id="audio">
+    <h2>🎵 Adding Audio (Nama / Mantra)</h2>
+    <p>Each japa can have its own chant audio that plays once per cycle.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">Open Settings → tap the japa you want to edit.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">Tap <strong>Choose Audio</strong> and pick an MP3 or WAV from your phone.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">The duration is detected automatically. Set the cycle time to match
+         (or longer than) the audio length.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">Use <strong>Speed</strong> to play it faster (1.2×, 1.5×) or slower
+         (0.75×). Use <strong>Mute</strong> to silence it without removing it.</div>
+    </div>
+
+    <div class="note">
+      <strong>Tip:</strong> Keep audio files short (under 30 seconds) and small (under 1 MB) for
+      best performance. Very large files take longer to load.
+    </div>
+  </section>
+
+  <section id="settings">
+    <h2>⚙️ Settings Explained</h2>
+    <table>
+      <tr><th>Setting</th><th>What it does</th></tr>
+      <tr><td>Time per cycle</td><td>How many seconds one count takes.</td></tr>
+      <tr><td>Audio file</td><td>Optional chant that plays each cycle.</td></tr>
+      <tr><td>Audio mute</td><td>Silences the audio without deleting the file.</td></tr>
+      <tr><td>Audio speed</td><td>Plays the audio faster or slower (0.75× to 2×).</td></tr>
+      <tr><td>Keep screen on <span class="badge badge-new">New</span></td><td>When enabled, the phone won't dim or sleep while Japa Timer is open. Toggle it from <em>Settings → Display</em>.</td></tr>
+      <tr><td>Target count</td><td>Optional goal (e.g., 108) for the session.</td></tr>
+      <tr><td>Max note</td><td>A reminder you'd like to see during the session.</td></tr>
+      <tr><td>Language</td><td>Switch the entire UI between English and Kannada.</td></tr>
+    </table>
+  </section>
+
+  <section id="display">
+    <h2>🌙 Keeping the Screen On</h2>
+    <p>
+      During longer japa sessions you don't want the phone screen to dim or lock. The app has a
+      built-in toggle for this so you don't have to change phone-wide settings.
+    </p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">Open <strong>Settings</strong> (⚙️ tab at the bottom).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">Find the <strong>🌙 Display</strong> card near the top.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">Turn on <strong>Keep screen on while app is running</strong>.</div>
+    </div>
+    <div class="note">
+      <strong>How it works:</strong> The screen stays on only while Japa Timer is open and
+      visible. When you switch to another app or lock the phone, normal screen behavior resumes —
+      so it won't drain battery in the background. The setting is remembered across launches.
+    </div>
+  </section>
+
+  <section id="troubleshoot">
+    <h2>🛠️ Troubleshooting</h2>
+
+    <h3>The audio cuts off too early</h3>
+    <p>Make sure the cycle time is at least as long as the audio length. If the audio is 6 seconds
+       and you set the cycle to 3 seconds, the timer will start the next cycle before the audio
+       finishes.</p>
+
+    <h3>Audio pauses when I switch apps</h3>
+    <p>Android pauses media when the app loses focus. Keep Japa Timer in the foreground for the
+       audio to keep playing. (A future update may add background-audio support.)</p>
+
+    <h3>Count didn't save after I closed the app</h3>
+    <p>Counts save automatically as you go. If you reset and confirmed the dialog, the count was
+       cleared — there's no way to recover a confirmed reset.</p>
+
+    <h3>App icon looks wrong after update</h3>
+    <p>Uninstall the old version completely, then install the new APK. Android sometimes caches
+       the old icon during in-place updates.</p>
+
+    <h3>Audio plays only after closing &amp; reopening the app</h3>
+    <p>This happens occasionally with very large audio files on first run. Pick a smaller file
+       (under 1 MB) or compress your existing one with a free MP3 compressor.</p>
+  </section>
+
+  <section id="about">
+    <h2>🙏 About</h2>
+    <div class="contact">
+      <div class="contact-name">Developed by Shivapriya Nanda</div>
+      <div class="contact-row">📧 <a href="mailto:ganeshasri@gmail.com">ganeshasri@gmail.com</a></div>
+      <div class="contact-row">📞 <a href="tel:+919980549454">+91 99805 49454</a></div>
+    </div>
+    <p style="text-align:center; margin-top:14px; font-size:14px; color:var(--muted);">
+      Built with care for daily sadhana. Suggestions and feedback are always welcome.
+    </p>
+  </section>
+
+</main>
+
+<footer>
+  🪔 ಶ್ರೀ ಗುರುಭ್ಯೋ ನಮಃ &nbsp;&middot;&nbsp; Japa Timer &nbsp;&middot;&nbsp; v2
+</footer>
+
+</body>
+</html>
