@@ -356,12 +356,17 @@
       <div class="feature">
         <div class="feature-icon">🔊</div>
         <div class="feature-title">Audio per japa</div>
-        <div class="feature-desc">Upload an MP3 or WAV file of the nama/mantra; it plays each cycle.</div>
+        <div class="feature-desc">Upload an MP3 or WAV file of the nama/mantra (up to 25 MB); it plays each cycle.</div>
       </div>
       <div class="feature">
         <div class="feature-icon">🎚️</div>
         <div class="feature-title">Speed &amp; mute</div>
         <div class="feature-desc">Play audio at 0.75× to 2× (including 1.2×). One-tap 🔊/🔇 button on each japa card.</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">🔁</div>
+        <div class="feature-title">Multi-chant audio <span class="badge badge-new">New</span></div>
+        <div class="feature-desc">One audio file can contain several chants. Tell the app how many japas are inside, and the per-chant interval is computed automatically.</div>
       </div>
       <div class="feature">
         <div class="feature-icon">🌐</div>
@@ -433,34 +438,90 @@
     <h3>Setting a target</h3>
     <p>You can set a target count (e.g., 108) for a japa. The app shows progress and notifies
        when you reach it.</p>
+
+    <h3>Saving to the daily log <span class="badge badge-new">Auto-save</span></h3>
+    <p>
+      Today's progress is now saved automatically — you don't have to remember to tap the
+      <strong>"🙏 Save Today's Japa"</strong> button. The app saves silently in three situations:
+    </p>
+    <ul>
+      <li>Every minute while the app is open and you have any progress.</li>
+      <li>When you switch away from the app or close it (visibility change / page hide).</li>
+      <li>When you pause a running timer.</li>
+    </ul>
+    <p>
+      The big <strong>Save Today's Japa</strong> button still works for an explicit save with
+      confirmation toast. Either way, today's entry will appear in the <em>Daily Log</em> tab
+      with the latest count, malas, and elapsed time.
+    </p>
+    <div class="note">
+      <strong>About midnight rollover:</strong> if you keep the app running past midnight, the
+      last snapshot before midnight is preserved under yesterday's date in the log. Sessions
+      after midnight start writing under the new date.
+    </div>
   </section>
 
   <section id="audio">
     <h2>🎵 Adding Audio (Nama / Mantra)</h2>
-    <p>Each japa can have its own chant audio that plays once per cycle.</p>
+    <p>Each japa can have its own chant audio that plays in a continuous loop while the timer
+       runs. The audio can contain a single chant or several chants — the app figures out the
+       per-chant interval from the audio duration and a chant count you provide.</p>
 
     <div class="step">
       <div class="step-num">1</div>
-      <div class="step-body">Open Settings → tap the japa you want to edit.</div>
+      <div class="step-body">Open <strong>Settings</strong> → tap the japa you want to edit.</div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
-      <div class="step-body">Tap <strong>Choose Audio</strong> and pick an MP3 or WAV from your phone.</div>
+      <div class="step-body">Tap <strong>+ Upload Audio</strong> and pick an MP3 or WAV from your
+         phone. Files up to <strong>25 MB</strong> are supported.</div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
-      <div class="step-body">The duration is detected automatically. Set the cycle time to match
-         (or longer than) the audio length.</div>
+      <div class="step-body">The duration is detected automatically and the new
+         <strong>Chants in audio</strong> field appears, defaulting to <strong>1</strong>.</div>
     </div>
     <div class="step">
       <div class="step-num">4</div>
-      <div class="step-body">Use <strong>Speed</strong> to play it faster (1.2×, 1.5×) or slower
-         (0.75×). Use <strong>Mute</strong> to silence it without removing it.</div>
+      <div class="step-body">If your audio contains multiple chants, change <strong>Chants in
+         audio</strong> to the actual number. The app will compute
+         <em>seconds per chant = audio duration ÷ chants</em> and use that for the count, mala,
+         and target math.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">Use <strong>Speed</strong> to play faster (1.2×, 1.5×, 2×) or slower
+         (0.75×). Use <strong>Mute</strong> to silence the audio without removing the file.</div>
+    </div>
+
+    <h3>How &quot;Chants in audio&quot; works <span class="badge badge-new">New</span></h3>
+    <p>
+      Earlier the app assumed every audio file contained exactly one chant, so the audio's full
+      duration became the per-chant interval. Now the audio loops continuously and the chant count
+      ticks at <em>duration ÷ chants</em>. For example:
+    </p>
+    <table>
+      <tr><th>Audio duration</th><th>Chants in audio</th><th>Seconds / chant</th></tr>
+      <tr><td>60 s</td><td>1</td><td>60 s</td></tr>
+      <tr><td>60 s</td><td>10</td><td>6 s</td></tr>
+      <tr><td>30 s</td><td>5</td><td>6 s</td></tr>
+      <tr><td>5 s</td><td>1</td><td>5 s</td></tr>
+    </table>
+    <p>
+      You can edit the chant count any time after upload — the count and mala numbers update
+      immediately. If you don't know the exact number, just leave it at <strong>1</strong> and the
+      app behaves the way it always did.
+    </p>
+
+    <div class="note">
+      <strong>Where audio is stored:</strong> Audio files are saved on your device using IndexedDB,
+      so even files of a few megabytes load quickly and survive app restarts. Nothing is uploaded
+      to any server.
     </div>
 
     <div class="note">
-      <strong>Tip:</strong> Keep audio files short (under 30 seconds) and small (under 1 MB) for
-      best performance. Very large files take longer to load.
+      <strong>Tip:</strong> For best performance keep audio files reasonably small. Files under
+      5 MB load instantly; up to 25 MB will work but use more memory and battery.
     </div>
   </section>
 
@@ -468,8 +529,9 @@
     <h2>⚙️ Settings Explained</h2>
     <table>
       <tr><th>Setting</th><th>What it does</th></tr>
-      <tr><td>Time per cycle</td><td>How many seconds one count takes.</td></tr>
-      <tr><td>Audio file</td><td>Optional chant that plays each cycle.</td></tr>
+      <tr><td>Time per cycle</td><td>How many seconds one count takes. When an audio is uploaded, this is derived from <em>audio duration ÷ chants in audio</em>.</td></tr>
+      <tr><td>Audio file</td><td>Optional chant that plays in a loop while the timer runs (MP3 / WAV, up to 25 MB).</td></tr>
+      <tr><td>Chants in audio <span class="badge badge-new">New</span></td><td>How many japas are recorded inside the uploaded audio. The app divides the audio duration by this number to get seconds per chant. Default is 1.</td></tr>
       <tr><td>Audio mute</td><td>Silences the audio without deleting the file. Also available as a one-tap 🔊/🔇 button on each japa card on the main timer screen.</td></tr>
       <tr><td>Audio speed</td><td>Plays the audio faster or slower (0.75× to 2×).</td></tr>
       <tr><td>Keep screen on <span class="badge badge-new">New</span></td><td>When enabled, the phone won't dim or sleep while Japa Timer is open. Toggle it from <em>Settings → Display</em>.</td></tr>
@@ -525,8 +587,27 @@
        the old icon during in-place updates.</p>
 
     <h3>Audio plays only after closing &amp; reopening the app</h3>
-    <p>This happens occasionally with very large audio files on first run. Pick a smaller file
-       (under 1 MB) or compress your existing one with a free MP3 compressor.</p>
+    <p>This happens occasionally with very large audio files on first run. The first time you
+       upload, the file is copied into device storage; on the very next play it should be
+       instant. If a particular file misbehaves, try a smaller version (under 5 MB).</p>
+
+    <h3>&quot;Storage full&quot; error when uploading audio</h3>
+    <p>
+      Older builds stored audio inside the small <em>localStorage</em> bucket and could fail on
+      files of a few megabytes. The current build uses <strong>IndexedDB</strong> with a
+      <strong>25 MB</strong> per-file limit, so this error should be rare. If you still see it,
+      remove an unused japa or pick a smaller audio file. Any audio you uploaded with an older
+      build is migrated automatically the first time you launch the new build.
+    </p>
+
+    <h3>The chant count moves too fast or too slow</h3>
+    <p>
+      If the audio contains more than one chant and you didn't change <strong>Chants in audio</strong>
+      from the default <strong>1</strong>, the timer will count one chant per full audio
+      playthrough. Open <em>Settings → that japa → Chants in audio</em> and enter the actual number
+      of japas inside the audio file. Conversely, if the count moves too fast, the chant count is
+      set higher than what's actually in the file.
+    </p>
   </section>
 
   <section id="about">
